@@ -12,6 +12,7 @@ public:
     int currentFrame;
     int width;
     void addFrame();
+    QString getSaveoutput();
 
 signals:
 

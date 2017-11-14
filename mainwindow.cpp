@@ -1,10 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "framelist.h"
 #include <QMessageBox>
 #include <QPushButton>
 #include <QString>
 #include <QColorDialog>
 #include <QColor>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -66,23 +68,32 @@ void MainWindow::displayFrameWidthQuestion() {
 
 void MainWindow::updateToolButton(int button)
 {
+    // brush
     if (button == 1)
     {
-        ui->brushToolButton->setChecked(true);
-        ui->flipToolButton->setChecked(false);
-//        ui->statusLabel->setText("Paint Brush: Draw on the main frame by clicking and dragging. Color can be selected from the color palette, size can be selected from pixel size options.");
+        ui->brushToolButton->setCheckable(true);
+        ui->flipToolButton->setCheckable(false);
+        ui->mirrorButton->setCheckable(false);
 
     }
+    // flip
     else if (button == 2)
     {
-        ui->brushToolButton->setChecked(false);
-        ui->flipToolButton->setChecked(true);
-//        ui->statusLabel->setText("Fill All Color Tool: Changes all of the identical colored pixels to the current selected color.");
+        ui->brushToolButton->setCheckable(false);
+        ui->flipToolButton->setCheckable(true);
+        ui->mirrorButton->setCheckable(false);
 
+    }
+    // mirror
+    else if (button == 3) {
+        ui->brushToolButton->setCheckable(false);
+        ui->flipToolButton->setCheckable(false);
+        ui->mirrorButton->setCheckable(true);
     }
 
     ui->brushToolButton->update();
     ui->flipToolButton->update();
+    ui->mirrorButton->update();
 
     emit toolClicked(button);
 }
@@ -109,6 +120,40 @@ void MainWindow::updateSelectedFrameWithNewImage(QImage* img)
 }
 
 /**
+ * @brief MainWindow::save
+ * @param saveAs
+ * Saves the file to a .ssp file
+ */
+void MainWindow::save()
+{
+    QString output = sprite.getSaveoutput();
+    QFileDialog *fileDialog = new QFileDialog;
+    fileDialog->setDefaultSuffix("ssp");
+
+    QString filename = fileDialog->getSaveFileName(this, tr("Save File"), "", "Text files (*.ssp)");
+
+    QFile f(filename);
+    if(f.open(QIODevice::WriteOnly))
+    {
+        QTextStream stream( &f );
+        stream << sprite.width << " " << sprite.width << endl;
+        stream << sprite.frames.size() << endl;
+        stream << output << endl;
+        f.close();
+        isSaved = true;
+    }
+}
+
+/**
+ * @brief MainWindow::on_paintbrushToolButton_clicked
+ * Selects the paint brush when clicked
+ */
+void MainWindow::on_saveButton_clicked()
+{
+    save();
+}
+
+/**
  * @brief MainWindow::on_paintbrushToolButton_clicked
  * Selects the paint brush when clicked
  */
@@ -124,6 +169,11 @@ void MainWindow::on_brushToolButton_clicked()
 void MainWindow::on_flipToolButton_clicked()
 {
     updateToolButton(2);
+}
+
+void MainWindow::on_mirrorButton_clicked()
+{
+    updateToolButton(3);
 }
 
 void MainWindow::on_colorsButton_pressed()
@@ -146,3 +196,5 @@ void MainWindow::on_redoButton_clicked()
     isSaved = false;
 
 }
+
+

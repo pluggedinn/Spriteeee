@@ -20,6 +20,7 @@ public:
     FrameList sprite;
     void displayFrameWidthQuestion();
     void updateToolButton(int button);
+    void save();
 
 signals:
     void setSizeFrame(int);
@@ -34,6 +35,7 @@ private slots:
     void on_colorsButton_pressed();
     void on_undoButton_clicked();
     void on_redoButton_clicked();
+    void on_mirrorButton_clicked();
 
 public slots:
     void updateSelectedFrameDisplay();

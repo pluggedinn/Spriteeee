@@ -40,7 +40,13 @@ void DrawArea::mousePressEvent(QMouseEvent* event) {
         this->pixmap = new QPixmap();
         pixmap->convertFromImage(*this->image);
         this->setPixmap(QPixmap::fromImage(*image));
+<<<<<<< HEAD
         emit updateCurrentFrameDisplay();
+=======
+        emit updateCurrentFrame();
+    } else if (tool = 3) {      // mirror
+        drawPixel(event);
+>>>>>>> halfway through implementing save
     }
 }
 
@@ -68,6 +74,10 @@ void DrawArea::drawPixel(QMouseEvent* event) {
         {
             if (tool == 1) {
                 image->setPixel(x,y,color.rgba());
+            } else if (tool = 3) {
+                int respectiveX = (pixelSize * (448 / pixelSize)) - x - 1 ; //mirror x location
+                image->setPixel(x,y,color.rgba());
+                image->setPixel(respectiveX,y,color.rgba());
             }
         }
     }

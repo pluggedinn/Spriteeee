@@ -7,6 +7,7 @@
 #include <QColorDialog>
 #include <QColor>
 #include <QFileDialog>
+#include <QTextStream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -136,9 +137,9 @@ void MainWindow::save()
     if(f.open(QIODevice::WriteOnly))
     {
         QTextStream stream( &f );
-        stream << sprite.width << " " << sprite.width << endl;
-        stream << sprite.frames.size() << endl;
-        stream << output << endl;
+        stream << sprite.width << " " << sprite.width << "\n";
+        stream << sprite.frames.size() << "\n";
+        stream << output << "\n";
         f.close();
         isSaved = true;
     }

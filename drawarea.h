@@ -38,6 +38,7 @@ public slots:
     void updateBrushSize(int);
     void undo();
     void redo();
+    void clearDrawArea();
 
 protected:
     void mousePressEvent(QMouseEvent* event);

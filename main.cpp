@@ -17,7 +17,10 @@ int main(int argc, char *argv[])
     QObject::connect(&w, SIGNAL(selectedColor(QColor)), &drawArea, SLOT(updateCurrentColor(QColor)));
     QObject::connect(&w, SIGNAL(undoButtonClicked()), &drawArea, SLOT(undo()));
     QObject::connect(&w, SIGNAL(redoButtonClicked()), &drawArea, SLOT(redo()));
-    QObject::connect(&w, SIGNAL(newFrameSelected(QImage*)), &drawArea, SLOT(updateCanvasToNewImage(QImage*)));
+
+    QObject::connect(&w, SIGNAL(clearFrameClicked()), &drawArea, SLOT(clearDrawArea()));
+
+//    QObject::connect(&w, SIGNAL(frameSelected(QImage*)), &drawArea, SLOT(clearUndoRedoList(QImage*)));
     QObject::connect(&w, SIGNAL(frameSelected(QImage*)), &drawArea, SLOT(updateCanvasToNewImage(QImage*)));
     QObject::connect(&w, SIGNAL(updateFrameSize(int)), &drawArea, SLOT(updateFrameWidth(int)));
     QObject::connect(&w, SIGNAL(brushSliderMoved(int)), &drawArea, SLOT(updateBrushSize(int)));

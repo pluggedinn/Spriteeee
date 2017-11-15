@@ -37,6 +37,7 @@ public slots:
     void updateCurrentColor(QColor);
     void undo();
     void redo();
+    void clearDrawArea();
 
 protected:
     void mousePressEvent(QMouseEvent* event);

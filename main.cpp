@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
     QObject::connect(&w, SIGNAL(selectedColor(QColor)), &drawArea, SLOT(updateCurrentColor(QColor)));
     QObject::connect(&w, SIGNAL(undoButtonClicked()), &drawArea, SLOT(undo()));
     QObject::connect(&w, SIGNAL(redoButtonClicked()), &drawArea, SLOT(redo()));
+    QObject::connect(&w, SIGNAL(clearFrameClicked()), &drawArea, SLOT(clearDrawArea()));
 
     QObject::connect(&w, SIGNAL(newFrameSelected(QImage*)), &drawArea, SLOT(updateCanvasToNewImage(QImage*)));
 

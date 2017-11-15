@@ -31,7 +31,6 @@ DrawArea::~DrawArea()
 }
 
 void DrawArea::mousePressEvent(QMouseEvent* event) {
-    qDebug("press %d", tool);
 
     if (tool == 1) {            // brush
         drawPixel(event);
@@ -60,7 +59,6 @@ void DrawArea::mouseReleaseEvent(QMouseEvent *event) {
 
 
 void DrawArea::drawPixel(QMouseEvent* event) {
-    qDebug("%d", tool);
     int posX = event->pos().x();
     int posY = event->pos().y();
     int column = posX / pixelSize;
@@ -105,7 +103,6 @@ void DrawArea::updateFrameWidth(int size)
 
 void DrawArea::updateToolNumber(int number)
 {
-    qDebug("update tool %d", number);
     tool = number;
 }
 
@@ -176,5 +173,15 @@ void DrawArea::redo()
         redoList.removeLast();
     }
     emit updateModelWithNewFrame(image);
+}
+
+void DrawArea::clearDrawArea() {
+    clear();
+    image->fill(Qt::transparent);
+    frame = this->image;
+    redoList.clear();
+    undoList.clear();
+    emit updateModelWithNewFrame(image);
+    detectCanvasChange(*image);
 }
 

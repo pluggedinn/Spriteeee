@@ -30,6 +30,7 @@ signals:
     void selectedColor(QColor);
     void undoButtonClicked();
     void redoButtonClicked();
+    void clearFrameClicked();
 
     void addFrameButtonClicked();
     void newFrameSelected(QImage*);
@@ -45,6 +46,7 @@ private slots:
     void on_redoButton_clicked();
     void on_mirrorButton_clicked();
     void on_saveButton_clicked();
+    void on_clearButton_clicked();
 
     void on_addFrameButton_clicked();
 

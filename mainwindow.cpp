@@ -68,7 +68,6 @@ void MainWindow::displayFrameWidthQuestion() {
 
 void MainWindow::updateToolButton(int button)
 {
-    qDebug("update %d", button);
     // brush
     if (button == 1)
     {
@@ -340,6 +339,11 @@ void MainWindow::on_redoButton_clicked()
     emit redoButtonClicked();
     isSaved = false;
 
+}
+
+void MainWindow::on_clearButton_clicked()
+{
+    emit clearFrameClicked();
 }
 
 void MainWindow::on_addFrameButton_clicked()

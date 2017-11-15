@@ -41,6 +41,7 @@ private slots:
     void on_mirrorButton_clicked();
     void on_saveButton_clicked();
     void on_loadButton_clicked();
+    void on_eraseButton_clicked();
 
 public slots:
     void updateSelectedFrameDisplay();

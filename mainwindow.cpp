@@ -126,7 +126,7 @@ void MainWindow::save()
     QFileDialog *fileDialog = new QFileDialog;
     fileDialog->setDefaultSuffix("ssp");
 
-    QString filename = fileDialog->getSaveFileName(this, tr("Save File"), "", "Text files (*.ssp)");
+    QString filename = fileDialog->getSaveFileName(this, tr("Save File"), "");
 
     QFile f(filename);
     if(f.open(QIODevice::WriteOnly))
@@ -138,6 +138,138 @@ void MainWindow::save()
         f.close();
         isSaved = true;
     }
+}
+
+/**
+ * @brief MainWindow::open
+ * Opens a .ssp file and converts it into the frames that comprise a project
+ */
+void MainWindow::load()
+{
+    QString filename = QFileDialog::getOpenFileName(this, "Select a file to open", QDir::homePath());
+    QFile f(filename);
+    if (f.open(QIODevice::ReadOnly))
+    {
+
+       sprite.frames.clear();
+
+       QTextStream in(&f);
+       int framesCount = 0;
+       int count = 0;
+       while (!in.atEnd() && count < 2)
+       {
+          QString line = in.readLine();
+          if(count == 0)
+          {
+              sprite.width = line.split(" ")[0].toInt();
+              emit updateFrameSize(sprite.width);
+          }
+          else if (count == 1)
+          {
+              framesCount = line.toInt();
+          }
+          count++;
+       }
+
+       for (int frame = 0; frame < framesCount; frame++)
+       {
+           QImage *img = new QImage(448, 448, QImage::Format_ARGB32);
+           for (int row = 0; row < sprite.width; row++){
+               QString line = in.readLine();
+               for (int column = 0; column < sprite.width; column++)
+               {
+                   QColor color;
+                   int red;
+                   int green;
+                   int blue;
+                   int alpha;
+                   for (int l = 0; l < 4; l++) {
+                       switch(l) {
+                       case 0:
+                           red = line.split(" ")[column * 4].toInt();
+                           break;
+                       case 1:
+                           green = line.split(" ")[column * 4 + 1].toInt();
+                           break;
+                       case 2:
+                           blue = line.split(" ")[column * 4 + 2].toInt();
+                           break;
+                       case 3:
+                           alpha = line.split(" ")[column * 4 + 3].toInt();
+                           break;
+                       }
+                   }
+                   color = QColor(red, green, blue, alpha);
+                   int pixelWidth = 448 / sprite.width;
+                   int startingXPixel = pixelWidth*column; //the leftmost pixel in the column
+                   int endingXPixel = startingXPixel + pixelWidth; //the rightmost pixel in the column
+                   int startingYPixel = pixelWidth*row; //the top pixel in the row
+                   int endingYPixel = startingYPixel + pixelWidth; //the bottom pixel in the row
+
+                   for(int x = startingXPixel; x < endingXPixel; x++)
+                   {
+                       for(int y = startingYPixel; y < endingYPixel; y++)
+                       {
+                           img->setPixel(x,y,color.rgba());
+                       }
+                   }
+               }
+           }
+           sprite.frames.append(img);
+       }
+
+       isSaved = true;
+
+       while(ui->framesListWidget->count() > 0)
+       {
+           QListWidgetItem* x = ui->framesListWidget->takeItem(0);
+           delete x;
+       }
+
+       int numFrames = 0;
+       for(int i = 0; i < sprite.frames.length() ; i++)
+       {
+           numFrames++;
+           currentFrame = new QPixmap(448, 448);
+
+           QListWidgetItem* item = new QListWidgetItem(QString::number(i+1), 0);
+           item->setText(QString::number(i+1));
+           ui->framesListWidget->addItem(item);
+           currentFrame->convertFromImage(*sprite.frames.at(i));
+           QIcon currentIcon(currentFrame->copy(0, 0, 448, 448));
+           item->setIcon(currentIcon);
+           repaint();
+       }
+
+       for(int i = 0; i < numFrames; i++)
+       {
+           selectedFrameItem = ui->framesListWidget->item(i);
+           QPixmap pxmap;
+           pxmap.convertFromImage(*sprite.frames.at(i));
+           QIcon newIcon(pxmap.copy(0,0,448,448));
+           selectedFrameItem->setIcon(newIcon);
+       }
+
+       selectedFrameItem =  ui->framesListWidget->item(0);
+       selectedFrameItem->setSelected(true);
+       emit frameSelected(sprite.frames.at(0));
+
+       //Add the addNewFrame icod to the end of the list.
+       QListWidgetItem *newItem = new QListWidgetItem("", 0);
+       newItem->setText("addFrame");
+       newItem->setIcon(QIcon(":/toolbar/icons/newImage.png"));
+       ui->framesListWidget->addItem(newItem);
+       ui->framesListWidget->update();
+    }
+}
+
+/**
+ * @brief MainWindow::on_paintbrushToolButton_clicked
+ * Selects the paint brush when clicked
+ */
+void MainWindow::on_loadButton_clicked()
+{
+    load();
 }
 
 /**

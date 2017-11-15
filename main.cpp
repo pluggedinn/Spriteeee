@@ -19,7 +19,10 @@ int main(int argc, char *argv[])
     QObject::connect(&w, SIGNAL(selectedColor(QColor)), &drawArea, SLOT(updateCurrentColor(QColor)));
     QObject::connect(&w, SIGNAL(undoButtonClicked()), &drawArea, SLOT(undo()));
     QObject::connect(&w, SIGNAL(redoButtonClicked()), &drawArea, SLOT(redo()));
+//    QObject::connect(&w, SIGNAL(frameSelected(QImage*)), &iLabel, SLOT(clearUndoRedoList(QImage*)));
+    QObject::connect(&w, SIGNAL(frameSelected(QImage*)), &drawArea, SLOT(updateCanvasToNewImage(QImage*)));
     QObject::connect(&drawArea, SIGNAL(updateModelWithNewFrame(QImage*)), &w, SLOT(updateSelectedFrameWithNewImage(QImage*)));
+    QObject::connect(&w, SIGNAL(updateFrameSize(int)), &drawArea, SLOT(updateFrameWidth(int)));
 
     w.show();
     w.displayFrameWidthQuestion();

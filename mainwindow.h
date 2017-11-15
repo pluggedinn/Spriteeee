@@ -21,13 +21,16 @@ public:
     void displayFrameWidthQuestion();
     void updateToolButton(int button);
     void save();
+    void load();
 
 signals:
     void setSizeFrame(int);
     void toolClicked(int);
+    void frameSelected(QImage*);
     void selectedColor(QColor);
     void undoButtonClicked();
     void redoButtonClicked();
+    void updateFrameSize(int);
 
 private slots:
     void on_brushToolButton_clicked();
@@ -37,6 +40,7 @@ private slots:
     void on_redoButton_clicked();
     void on_mirrorButton_clicked();
     void on_saveButton_clicked();
+    void on_loadButton_clicked();
 
 public slots:
     void updateSelectedFrameDisplay();

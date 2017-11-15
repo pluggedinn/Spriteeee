@@ -51,6 +51,7 @@ private slots:
     void on_framesListWidget_itemClicked(QListWidgetItem *item);
 
     void on_loadButton_clicked();
+    void on_eraseButton_clicked();
 
 
 public slots:

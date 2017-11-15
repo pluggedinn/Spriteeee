@@ -68,32 +68,44 @@ void MainWindow::displayFrameWidthQuestion() {
 
 void MainWindow::updateToolButton(int button)
 {
+    qDebug("update %d", button);
     // brush
     if (button == 1)
     {
-        ui->brushToolButton->setCheckable(true);
-        ui->flipToolButton->setCheckable(false);
-        ui->mirrorButton->setCheckable(false);
+        ui->brushToolButton->setChecked(true);
+        ui->flipToolButton->setChecked(false);
+        ui->mirrorButton->setChecked(false);
+        ui->eraseButton->setChecked(false);
 
     }
     // flip
     else if (button == 2)
     {
-        ui->brushToolButton->setCheckable(false);
-        ui->flipToolButton->setCheckable(true);
-        ui->mirrorButton->setCheckable(false);
+        ui->brushToolButton->setChecked(false);
+        ui->flipToolButton->setChecked(true);
+        ui->mirrorButton->setChecked(false);
+        ui->eraseButton->setChecked(false);
 
     }
     // mirror
     else if (button == 3) {
-        ui->brushToolButton->setCheckable(false);
-        ui->flipToolButton->setCheckable(false);
-        ui->mirrorButton->setCheckable(true);
+        ui->brushToolButton->setChecked(false);
+        ui->flipToolButton->setChecked(false);
+        ui->mirrorButton->setChecked(true);
+        ui->eraseButton->setChecked(false);
+    }
+    // erase
+    else if (button == 4) {
+        ui->brushToolButton->setChecked(false);
+        ui->flipToolButton->setChecked(false);
+        ui->mirrorButton->setChecked(false);
+        ui->eraseButton->setChecked(true);
     }
 
     ui->brushToolButton->update();
     ui->flipToolButton->update();
     ui->mirrorButton->update();
+    ui->eraseButton->update();
 
     emit toolClicked(button);
 }
@@ -302,6 +314,11 @@ void MainWindow::on_flipToolButton_clicked()
 void MainWindow::on_mirrorButton_clicked()
 {
     updateToolButton(3);
+}
+
+void MainWindow::on_eraseButton_clicked()
+{
+    updateToolButton(4);
 }
 
 void MainWindow::on_colorsButton_pressed()

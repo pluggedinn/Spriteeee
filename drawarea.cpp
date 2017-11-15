@@ -1,4 +1,5 @@
 #include "drawarea.h"
+#include <string>
 #include <QLabel>
 #include <QMouseEvent>
 #include <QImage>
@@ -30,6 +31,7 @@ DrawArea::~DrawArea()
 }
 
 void DrawArea::mousePressEvent(QMouseEvent* event) {
+    qDebug("press %d", tool);
 
     if (tool == 1) {            // brush
         drawPixel(event);
@@ -41,7 +43,9 @@ void DrawArea::mousePressEvent(QMouseEvent* event) {
         pixmap->convertFromImage(*this->image);
         this->setPixmap(QPixmap::fromImage(*image));
         emit updateCurrentFrameDisplay();
-    } else if (tool = 3) {      // mirror
+    } else if (tool == 3) {      // mirror
+        drawPixel(event);
+    } else if (tool == 4) {      // erase
         drawPixel(event);
     }
 }
@@ -54,7 +58,9 @@ void DrawArea::mouseReleaseEvent(QMouseEvent *event) {
     detectCanvasChange(*image);
 }
 
+
 void DrawArea::drawPixel(QMouseEvent* event) {
+    qDebug("%d", tool);
     int posX = event->pos().x();
     int posY = event->pos().y();
     int column = posX / pixelSize;
@@ -70,10 +76,12 @@ void DrawArea::drawPixel(QMouseEvent* event) {
         {
             if (tool == 1) {
                 image->setPixel(x,y,color.rgba());
-            } else if (tool = 3) {
+            } else if (tool == 3) {
                 int respectiveX = (pixelSize * (448 / pixelSize)) - x - 1 ; //mirror x location
                 image->setPixel(x,y,color.rgba());
                 image->setPixel(respectiveX,y,color.rgba());
+            } else if (tool == 4) {
+                clearPixel(x,y);
             }
         }
     }
@@ -85,6 +93,10 @@ void DrawArea::drawPixel(QMouseEvent* event) {
     emit updateCurrentFrameDisplay();
 }
 
+void DrawArea::clearPixel(int x, int y) {
+    image->setPixel(x,y,0000);
+}
+
 void DrawArea::updateFrameWidth(int size)
 {
     numberOfPixels = size;
@@ -93,6 +105,7 @@ void DrawArea::updateFrameWidth(int size)
 
 void DrawArea::updateToolNumber(int number)
 {
+    qDebug("update tool %d", number);
     tool = number;
 }
 

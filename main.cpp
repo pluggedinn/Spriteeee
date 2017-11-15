@@ -11,7 +11,6 @@ int main(int argc, char *argv[])
     QFrame *paintFramePtr = w.findChild<QFrame*>("paintFrame");
     DrawArea drawArea(paintFramePtr, w.sprite.frames[0]);
     drawArea.setGeometry(0,0,448,448);
-    drawArea.show();
 
     QObject::connect(&w, SIGNAL(setSizeFrame(int)), &drawArea, SLOT(updateFrameWidth(int)));
     QObject::connect(&w, SIGNAL(toolClicked(int)), &drawArea, SLOT(updateToolNumber(int)));
@@ -28,6 +27,7 @@ int main(int argc, char *argv[])
     QObject::connect(&drawArea, SIGNAL(updateModelWithNewFrame(QImage*)), &w, SLOT(updateSelectedFrameWithNewImage(QImage*)));
     QObject::connect(&w, SIGNAL(updateFrameSize(int)), &drawArea, SLOT(updateFrameWidth(int)));
 
+    drawArea.show();
     w.show();
     w.displayFrameWidthQuestion();
 

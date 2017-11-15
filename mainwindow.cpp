@@ -38,7 +38,6 @@ void MainWindow::createEmptyFrame() {
     item->setIcon(currentIcon);
     sprite.currentFrame = numFrames - 1;
     ui->framesListWidget->update();
-
 }
 
 /**
@@ -99,10 +98,7 @@ void MainWindow::updateToolButton(int button)
     emit toolClicked(button);
 }
 
-/**
- * Method used to save current Image to Frames Window
- * @brief MainWindow::updateSelectedFrameDisplay
- */
+
 void MainWindow::updateSelectedFrameDisplay()
 {
     QPixmap pxmap;
@@ -113,6 +109,7 @@ void MainWindow::updateSelectedFrameDisplay()
 
 }
 
+
 void MainWindow::updateSelectedFrameWithNewImage(QImage* img)
 {
     sprite.frames.replace(sprite.currentFrame, img);
@@ -120,11 +117,9 @@ void MainWindow::updateSelectedFrameWithNewImage(QImage* img)
     isSaved = false;
 }
 
-/**
- * @brief MainWindow::save
- * @param saveAs
- * Saves the file to a .ssp file
- */
+
+
+
 void MainWindow::save()
 {
     QString output = sprite.getSaveoutput();
@@ -198,4 +193,27 @@ void MainWindow::on_redoButton_clicked()
 
 }
 
+void MainWindow::on_addFrameButton_clicked()
+{
+    createEmptyFrame();
+    isSaved = false;
 
+    emit newFrameSelected(sprite.frames.at(sprite.currentFrame));
+
+}
+
+
+void MainWindow:: on_framesListWidget_itemClicked(QListWidgetItem *item)
+{
+    updateSelectedFrameDisplay();
+
+    int newFrameNumber = item->text().toInt();
+    sprite.currentFrame = newFrameNumber - 1;
+    selectedFrameItem = item;
+
+    updateSelectedFrameDisplay();
+
+    emit newFrameSelected(sprite.frames.at(sprite.currentFrame));
+
+
+}

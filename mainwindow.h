@@ -28,6 +28,8 @@ signals:
     void selectedColor(QColor);
     void undoButtonClicked();
     void redoButtonClicked();
+    void addFrameButtonClicked();
+    void newFrameSelected(QImage*);
 
 private slots:
     void on_brushToolButton_clicked();
@@ -37,16 +39,17 @@ private slots:
     void on_redoButton_clicked();
     void on_mirrorButton_clicked();
     void on_saveButton_clicked();
+    void on_addFrameButton_clicked();
+
+    void on_framesListWidget_itemClicked(QListWidgetItem *item);
 
 public slots:
     void updateSelectedFrameDisplay();
+    void createEmptyFrame();
+    void updateSelectedFrameWithNewImage(QImage* img);
 
 private:
     Ui::MainWindow *ui;
-    void createEmptyFrame();
-
-    void updateSelectedFrameWithNewImage(QImage* img);
-
     QListWidgetItem* selectedFrameItem;
     QColor color;
     QPixmap *currentFrame;

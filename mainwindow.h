@@ -33,7 +33,6 @@ signals:
     void clearFrameClicked();
 
     void addFrameButtonClicked();
-    void newFrameSelected(QImage*);
 
     void updateFrameSize(int);
 
@@ -47,7 +46,7 @@ private slots:
     void on_mirrorButton_clicked();
     void on_saveButton_clicked();
     void on_clearButton_clicked();
-
+    void on_deleteFrameButton_clicked();
     void on_addFrameButton_clicked();
 
     void on_framesListWidget_itemClicked(QListWidgetItem *item);

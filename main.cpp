@@ -20,9 +20,7 @@ int main(int argc, char *argv[])
     QObject::connect(&w, SIGNAL(redoButtonClicked()), &drawArea, SLOT(redo()));
     QObject::connect(&w, SIGNAL(clearFrameClicked()), &drawArea, SLOT(clearDrawArea()));
 
-    QObject::connect(&w, SIGNAL(newFrameSelected(QImage*)), &drawArea, SLOT(updateCanvasToNewImage(QImage*)));
-
-//    QObject::connect(&w, SIGNAL(frameSelected(QImage*)), &iLabel, SLOT(clearUndoRedoList(QImage*)));
+//    QObject::connect(&w, SIGNAL(frameSelected(QImage*)), &drawArea, SLOT(clearUndoRedoList(QImage*)));
     QObject::connect(&w, SIGNAL(frameSelected(QImage*)), &drawArea, SLOT(updateCanvasToNewImage(QImage*)));
 
     QObject::connect(&drawArea, SIGNAL(updateModelWithNewFrame(QImage*)), &w, SLOT(updateSelectedFrameWithNewImage(QImage*)));

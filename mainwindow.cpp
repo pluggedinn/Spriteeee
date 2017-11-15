@@ -351,8 +351,39 @@ void MainWindow::on_addFrameButton_clicked()
     createEmptyFrame();
     isSaved = false;
 
-    emit newFrameSelected(sprite.frames.at(sprite.currentFrame));
+    emit frameSelected(sprite.frames.at(sprite.currentFrame));
 
+}
+
+void MainWindow::on_deleteFrameButton_clicked()
+{
+    if(sprite.frames.count() > 1)
+    {
+         if (ui->framesListWidget->item(sprite.currentFrame)->text()  != "addFrame")
+         {
+            sprite.frames.removeAt(sprite.currentFrame);
+            for(int i = 0; i < numFrames-1; i++)
+            {
+                selectedFrameItem = ui->framesListWidget->item(i);
+                QPixmap pxmap;
+                pxmap.convertFromImage(*sprite.frames.at(i));
+                QIcon newIcon(pxmap.copy(0,0,448,448));
+                selectedFrameItem->setIcon(newIcon);
+            }
+
+            QListWidgetItem *item = ui->framesListWidget->item(sprite.frames.length());
+            delete item;
+            if(sprite.currentFrame >= sprite.frames.count()){
+                sprite.currentFrame--;
+            }
+            selectedFrameItem =  ui->framesListWidget->item(sprite.currentFrame);
+            selectedFrameItem->setSelected(true);
+            emit frameSelected(sprite.frames.at(sprite.currentFrame));
+
+            numFrames--;
+            repaint();
+        }
+    }
 }
 
 
@@ -366,7 +397,7 @@ void MainWindow:: on_framesListWidget_itemClicked(QListWidgetItem *item)
 
     updateSelectedFrameDisplay();
 
-    emit newFrameSelected(sprite.frames.at(sprite.currentFrame));
+    emit frameSelected(sprite.frames.at(sprite.currentFrame));
 
 
 }

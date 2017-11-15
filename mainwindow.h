@@ -30,11 +30,10 @@ signals:
     void selectedColor(QColor);
     void undoButtonClicked();
     void redoButtonClicked();
-
     void addFrameButtonClicked();
     void newFrameSelected(QImage*);
-
     void updateFrameSize(int);
+    void brushSliderMoved(int);
 
 
 private slots:
@@ -45,14 +44,11 @@ private slots:
     void on_redoButton_clicked();
     void on_mirrorButton_clicked();
     void on_saveButton_clicked();
-
     void on_addFrameButton_clicked();
-
     void on_framesListWidget_itemClicked(QListWidgetItem *item);
-
     void on_loadButton_clicked();
     void on_eraseButton_clicked();
-
+    void on_brushSizeSlider_sliderMoved(int position);
 
 public slots:
     void updateSelectedFrameDisplay();

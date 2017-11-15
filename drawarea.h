@@ -35,6 +35,7 @@ public slots:
     void updateToolNumber(int number);
     void updateCanvasToNewImage(QImage* image);
     void updateCurrentColor(QColor);
+    void updateBrushSize(int);
     void undo();
     void redo();
 

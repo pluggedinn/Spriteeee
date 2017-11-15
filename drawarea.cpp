@@ -109,6 +109,12 @@ void DrawArea::updateToolNumber(int number)
     tool = number;
 }
 
+
+void DrawArea::updateBrushSize(int size)
+{
+    pixelNumber = size;
+}
+
 /**
  * Updates the current canvas window to the new selected frame Image.
  * @brief ImageLabel::updateCanvasToNewImage

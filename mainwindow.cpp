@@ -366,3 +366,9 @@ void MainWindow:: on_framesListWidget_itemClicked(QListWidgetItem *item)
 
 
 }
+
+void MainWindow::on_brushSizeSlider_sliderMoved(int position)
+{
+    emit brushSliderMoved(position);
+
+}

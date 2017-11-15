@@ -13,6 +13,12 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowOpacity">
+   <double>1.000000000000000</double>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QFrame" name="paintFrame">
     <property name="geometry">
@@ -188,7 +194,6 @@
      <string>Load</string>
     </property>
    </widget>
-
    <widget class="QPushButton" name="addFrameButton">
     <property name="geometry">
      <rect>
@@ -202,7 +207,6 @@
      <string>Add</string>
     </property>
    </widget>
-
    <widget class="QPushButton" name="exportButton">
     <property name="geometry">
      <rect>
@@ -227,6 +231,40 @@
     </property>
     <property name="text">
      <string>Erase</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="brushSizeSlider">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>460</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+      <underline>false</underline>
+     </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>10</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <property name="tickPosition">
+     <enum>QSlider::TicksBelow</enum>
+    </property>
+    <property name="tickInterval">
+     <number>5</number>
     </property>
    </widget>
   </widget>

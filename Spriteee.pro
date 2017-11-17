@@ -32,7 +32,8 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     drawarea.h \
-    framelist.h
+    framelist.h \
+    gif.h
 
 FORMS += \
         mainwindow.ui

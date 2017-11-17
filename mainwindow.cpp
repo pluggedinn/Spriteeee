@@ -116,7 +116,6 @@ void MainWindow::updateSelectedFrameDisplay()
     pxmap.convertFromImage(*sprite.frames.at(sprite.currentFrame));
     QIcon currentIcon(pxmap.copy(0,0,448,448));
     selectedFrameItem->setIcon(currentIcon);
-    isSaved = false;
 
 }
 
@@ -125,11 +124,16 @@ void MainWindow::updateSelectedFrameWithNewImage(QImage* img)
 {
     sprite.frames.replace(sprite.currentFrame, img);
     updateSelectedFrameDisplay();
-    isSaved = false;
 }
 
+void export_to_gif() {
 
+}
 
+void MainWindow::copyPreviousFrame() {
+    QImage *previousImage = new QImage(sprite.frames.at(sprite.currentFrame - 1)->copy(0,0,448,448));
+    updateSelectedFrameWithNewImage(previousImage);
+}
 
 void MainWindow::save()
 {
@@ -146,8 +150,7 @@ void MainWindow::save()
         stream << sprite.width << " " << sprite.width << "\n";
         stream << sprite.frames.size() << "\n";
         stream << output << "\n";
-        f.close();
-        isSaved = true;
+        f.close();;
     }
 }
 
@@ -228,8 +231,6 @@ void MainWindow::load()
            }
            sprite.frames.append(img);
        }
-
-       isSaved = true;
 
        while(ui->framesListWidget->count() > 0)
        {
@@ -330,15 +331,11 @@ void MainWindow::on_colorsButton_pressed()
 void MainWindow::on_undoButton_clicked()
 {
     emit undoButtonClicked();
-    isSaved = false;
-
 }
 
 void MainWindow::on_redoButton_clicked()
 {
     emit redoButtonClicked();
-    isSaved = false;
-
 }
 
 void MainWindow::on_clearButton_clicked()
@@ -349,10 +346,13 @@ void MainWindow::on_clearButton_clicked()
 void MainWindow::on_addFrameButton_clicked()
 {
     createEmptyFrame();
-    isSaved = false;
-
     emit frameSelected(sprite.frames.at(sprite.currentFrame));
+}
 
+void MainWindow::on_duplicateFrameButton_clicked() {
+    createEmptyFrame();
+    copyPreviousFrame();
+    emit frameSelected(sprite.frames.at(sprite.currentFrame));
 }
 
 void MainWindow::on_deleteFrameButton_clicked()

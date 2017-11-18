@@ -45,6 +45,7 @@ private slots:
     void on_redoButton_clicked();
     void on_mirrorButton_clicked();
     void on_saveButton_clicked();
+    void on_exportButton_clicked();
     void on_clearButton_clicked();
     void on_deleteFrameButton_clicked();
     void on_duplicateFrameButton_clicked();

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "framelist.h"
+#include "gif.h"
 #include <QMessageBox>
 #include <QPushButton>
 #include <QString>
@@ -8,6 +9,8 @@
 #include <QColor>
 #include <QFileDialog>
 #include <QTextStream>
+#include <QProcess>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -126,8 +129,34 @@ void MainWindow::updateSelectedFrameWithNewImage(QImage* img)
     updateSelectedFrameDisplay();
 }
 
-void export_to_gif() {
+void MainWindow::export_to_gif() {
+    int counter = 0;
+    QProcess proc;
+    QString process = "convert";
+    QStringList parameter_list;
+    QString delay = QString::number(100.0/ (double) 10);
+    parameter_list << "-dispose" << "background" << "-delay" << delay;
 
+    QFileDialog *fileDialog = new QFileDialog;
+//    fileDialog->setDefaultSuffix("gif");
+
+    QString filename = fileDialog->getSaveFileName(this, tr("Save File"), "");
+
+    for(QImage *img : sprite.frames) {
+        QString msg = QString ("temp%1").arg(counter);
+        img->save(msg, "PNG");
+        parameter_list << msg;
+        counter++;
+    }
+    QFileInfo convertFileInfo("/usr/bin/convert");
+
+    parameter_list << filename+".gif";
+
+    proc.start(process, parameter_list);
+    if (!(proc.waitForFinished()))
+        qDebug() << "Conversion failed:" << proc.errorString();
+    else
+        qDebug() << "Conversion output:" << proc.readAll();
 }
 
 void MainWindow::copyPreviousFrame() {
@@ -291,6 +320,10 @@ void MainWindow::on_loadButton_clicked()
 void MainWindow::on_saveButton_clicked()
 {
     save();
+}
+
+void MainWindow::on_exportButton_clicked() {
+    export_to_gif();
 }
 
 /**

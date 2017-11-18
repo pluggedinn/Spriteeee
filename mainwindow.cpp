@@ -315,27 +315,6 @@ void MainWindow::load()
     }
 }
 
-/**
- * @brief MainWindow::on_paintbrushToolButton_clicked
- * Selects the paint brush when clicked
- */
-void MainWindow::on_loadButton_clicked()
-{
-    load();
-}
-
-/**
- * @brief MainWindow::on_paintbrushToolButton_clicked
- * Selects the paint brush when clicked
- */
-void MainWindow::on_saveButton_clicked()
-{
-    save();
-}
-
-void MainWindow::on_exportButton_clicked() {
-    export_to_gif();
-}
 
 /**
  * @brief MainWindow::on_paintbrushToolButton_clicked
@@ -456,4 +435,19 @@ void MainWindow::on_brushSizeSlider_valueChanged(int value)
 void MainWindow::on_invertButton_clicked()
 {
     emit invertButtonClicked();
+}
+
+void MainWindow::on_actionSave_As_triggered()
+{
+    save();
+}
+
+void MainWindow::on_actionLoad_triggered()
+{
+    load();
+}
+
+void MainWindow::on_actionExport_triggered()
+{
+    export_to_gif();
 }

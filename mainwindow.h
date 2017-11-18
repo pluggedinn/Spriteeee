@@ -48,17 +48,17 @@ private slots:
     void on_undoButton_clicked();
     void on_redoButton_clicked();
     void on_mirrorButton_clicked();
-    void on_saveButton_clicked();
-    void on_exportButton_clicked();
     void on_clearButton_clicked();
     void on_deleteFrameButton_clicked();
     void on_duplicateFrameButton_clicked();
     void on_addFrameButton_clicked();
     void on_framesListWidget_itemClicked(QListWidgetItem *item);
-    void on_loadButton_clicked();
     void on_eraseButton_clicked();
     void on_brushSizeSlider_valueChanged(int value);
     void on_invertButton_clicked();
+    void on_actionSave_As_triggered();
+    void on_actionLoad_triggered();
+    void on_actionExport_triggered();
 
 public slots:
     void updateSelectedFrameDisplay();

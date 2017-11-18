@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>855</width>
-    <height>768</height>
+    <height>777</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,15 +25,21 @@
      <rect>
       <x>160</x>
       <y>60</y>
-      <width>451</width>
-      <height>451</height>
+      <width>512</width>
+      <height>512</height>
      </rect>
     </property>
     <property name="frameShape">
      <enum>QFrame::StyledPanel</enum>
     </property>
     <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>4</number>
+    </property>
+    <property name="midLineWidth">
+     <number>1</number>
     </property>
    </widget>
    <widget class="QPushButton" name="brushToolButton">
@@ -66,8 +72,8 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>520</y>
-      <width>581</width>
+      <y>590</y>
+      <width>641</width>
       <height>131</height>
      </rect>
     </property>
@@ -93,7 +99,7 @@
    <widget class="QPushButton" name="deleteFrameButton">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>690</x>
       <y>660</y>
       <width>81</width>
       <height>22</height>
@@ -106,8 +112,8 @@
    <widget class="QPushButton" name="duplicateFrameButton">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>660</y>
+      <x>690</x>
+      <y>630</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -132,7 +138,7 @@
    <widget class="QPushButton" name="undoButton">
     <property name="geometry">
      <rect>
-      <x>630</x>
+      <x>700</x>
       <y>60</y>
       <width>51</width>
       <height>51</height>
@@ -145,7 +151,7 @@
    <widget class="QPushButton" name="redoButton">
     <property name="geometry">
      <rect>
-      <x>690</x>
+      <x>770</x>
       <y>60</y>
       <width>51</width>
       <height>51</height>
@@ -197,8 +203,8 @@
    <widget class="QPushButton" name="addFrameButton">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>660</y>
+      <x>690</x>
+      <y>690</y>
       <width>81</width>
       <height>22</height>
      </rect>
@@ -237,22 +243,46 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>440</y>
+      <y>429</y>
       <width>111</width>
-      <height>20</height>
+      <height>31</height>
      </rect>
+    </property>
+    <property name="toolTipDuration">
+     <number>-1</number>
+    </property>
+    <property name="statusTip">
+     <string/>
+    </property>
+    <property name="whatsThis">
+     <string/>
+    </property>
+    <property name="accessibleName">
+     <string/>
+    </property>
+    <property name="accessibleDescription">
+     <string/>
     </property>
     <property name="minimum">
      <number>1</number>
     </property>
     <property name="maximum">
-     <number>20</number>
+     <number>10</number>
     </property>
     <property name="singleStep">
      <number>1</number>
     </property>
+    <property name="sliderPosition">
+     <number>2</number>
+    </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
+    </property>
+    <property name="invertedAppearance">
+     <bool>false</bool>
+    </property>
+    <property name="invertedControls">
+     <bool>false</bool>
     </property>
     <property name="tickPosition">
      <enum>QSlider::TicksBelow</enum>
@@ -272,6 +302,50 @@
     </property>
     <property name="text">
      <string>Clear frame</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="invertButton">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>180</y>
+      <width>51</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Invert</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="previewFrame">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>124</y>
+      <width>141</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::WinPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>-1</number>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="scaledContents">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>

@@ -8,6 +8,7 @@
 #include <QColor>
 #include <QFileDialog>
 #include <QTextStream>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,6 +17,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     numFrames = 0;
     createEmptyFrame();
+
+    nextFrame = new QTimer();
+    connect(nextFrame, SIGNAL(timeout()), this, SLOT(previewAnimation()));
+
+    previewAnimation();
 }
 
 MainWindow::~MainWindow()
@@ -34,7 +40,7 @@ void MainWindow::createEmptyFrame() {
     ui->framesListWidget->item(numFrames - 1)->setSelected(true);
     selectedFrameItem = item;
     currentFrame->convertFromImage(*sprite.frames.at(numFrames-1));
-    QIcon currentIcon(currentFrame->copy(0,0,448,448));
+    QIcon currentIcon(currentFrame->copy(0,0,512,512));
     item->setIcon(currentIcon);
     sprite.currentFrame = numFrames - 1;
     ui->framesListWidget->update();
@@ -73,7 +79,6 @@ void MainWindow::updateToolButton(int button)
     {
         ui->brushToolButton->setChecked(true);
         ui->flipToolButton->setChecked(false);
-        ui->mirrorButton->setChecked(false);
         ui->eraseButton->setChecked(false);
 
     }
@@ -82,28 +87,18 @@ void MainWindow::updateToolButton(int button)
     {
         ui->brushToolButton->setChecked(false);
         ui->flipToolButton->setChecked(true);
-        ui->mirrorButton->setChecked(false);
         ui->eraseButton->setChecked(false);
 
     }
-    // mirror
+    // erase
     else if (button == 3) {
         ui->brushToolButton->setChecked(false);
         ui->flipToolButton->setChecked(false);
-        ui->mirrorButton->setChecked(true);
-        ui->eraseButton->setChecked(false);
-    }
-    // erase
-    else if (button == 4) {
-        ui->brushToolButton->setChecked(false);
-        ui->flipToolButton->setChecked(false);
-        ui->mirrorButton->setChecked(false);
         ui->eraseButton->setChecked(true);
     }
 
     ui->brushToolButton->update();
     ui->flipToolButton->update();
-    ui->mirrorButton->update();
     ui->eraseButton->update();
 
     emit toolClicked(button);
@@ -114,7 +109,7 @@ void MainWindow::updateSelectedFrameDisplay()
 {
     QPixmap pxmap;
     pxmap.convertFromImage(*sprite.frames.at(sprite.currentFrame));
-    QIcon currentIcon(pxmap.copy(0,0,448,448));
+    QIcon currentIcon(pxmap.copy(0,0,512,512));
     selectedFrameItem->setIcon(currentIcon);
     isSaved = false;
 
@@ -129,7 +124,26 @@ void MainWindow::updateSelectedFrameWithNewImage(QImage* img)
 }
 
 
+void MainWindow::previewAnimation()
+{
+    qDebug("preview updated");
+    if (previewFrame < sprite.frames.size() - 1)
+        previewFrame++;
+    else
+        previewFrame = 0;
+    QImage* previewImage = sprite.frames[previewFrame];
+    QImage preview;
+    preview = (previewImage->scaled(128,128));
+    ui->previewFrame->setAlignment(Qt::AlignCenter);
+    ui->previewFrame->setPixmap(QPixmap::fromImage(preview));
+    nextFrame->start(1000);
+}
 
+void MainWindow::restartPreview()
+{
+    qDebug("and");
+    previewAnimation();
+}
 
 void MainWindow::save()
 {
@@ -184,7 +198,7 @@ void MainWindow::load()
 
        for (int frame = 0; frame < framesCount; frame++)
        {
-           QImage *img = new QImage(448, 448, QImage::Format_ARGB32);
+           QImage *img = new QImage(512, 512, QImage::Format_ARGB32);
            for (int row = 0; row < sprite.width; row++){
                QString line = in.readLine();
                for (int column = 0; column < sprite.width; column++)
@@ -211,7 +225,7 @@ void MainWindow::load()
                        }
                    }
                    color = QColor(red, green, blue, alpha);
-                   int pixelWidth = 448 / sprite.width;
+                   int pixelWidth = 512 / sprite.width;
                    int startingXPixel = pixelWidth*column; //the leftmost pixel in the column
                    int endingXPixel = startingXPixel + pixelWidth; //the rightmost pixel in the column
                    int startingYPixel = pixelWidth*row; //the top pixel in the row
@@ -241,13 +255,13 @@ void MainWindow::load()
        for(int i = 0; i < sprite.frames.length() ; i++)
        {
            numFrames++;
-           currentFrame = new QPixmap(448, 448);
+           currentFrame = new QPixmap(512, 512);
 
            QListWidgetItem* item = new QListWidgetItem(QString::number(i+1), 0);
            item->setText(QString::number(i+1));
            ui->framesListWidget->addItem(item);
            currentFrame->convertFromImage(*sprite.frames.at(i));
-           QIcon currentIcon(currentFrame->copy(0, 0, 448, 448));
+           QIcon currentIcon(currentFrame->copy(0, 0, 512, 512));
            item->setIcon(currentIcon);
            repaint();
        }
@@ -257,7 +271,7 @@ void MainWindow::load()
            selectedFrameItem = ui->framesListWidget->item(i);
            QPixmap pxmap;
            pxmap.convertFromImage(*sprite.frames.at(i));
-           QIcon newIcon(pxmap.copy(0,0,448,448));
+           QIcon newIcon(pxmap.copy(0,0,512,512));
            selectedFrameItem->setIcon(newIcon);
        }
 
@@ -265,11 +279,6 @@ void MainWindow::load()
        selectedFrameItem->setSelected(true);
        emit frameSelected(sprite.frames.at(0));
 
-       //Add the addNewFrame icod to the end of the list.
-       QListWidgetItem *newItem = new QListWidgetItem("", 0);
-       newItem->setText("addFrame");
-       newItem->setIcon(QIcon(":/toolbar/icons/newImage.png"));
-       ui->framesListWidget->addItem(newItem);
        ui->framesListWidget->update();
     }
 }
@@ -301,23 +310,20 @@ void MainWindow::on_brushToolButton_clicked()
     updateToolButton(1);
 }
 
-/**
- * @brief MainWindow::on_paintbrushToolButton_clicked
- * Selects the paint brush when clicked
- */
-void MainWindow::on_flipToolButton_clicked()
+void MainWindow::on_mirrorButton_clicked()
 {
     updateToolButton(2);
 }
 
-void MainWindow::on_mirrorButton_clicked()
+
+void MainWindow::on_eraseButton_clicked()
 {
     updateToolButton(3);
 }
 
-void MainWindow::on_eraseButton_clicked()
+void MainWindow::on_flipToolButton_clicked()
 {
-    updateToolButton(4);
+    emit flipButtonClicked();
 }
 
 void MainWindow::on_colorsButton_pressed()
@@ -343,7 +349,13 @@ void MainWindow::on_redoButton_clicked()
 
 void MainWindow::on_clearButton_clicked()
 {
-    emit clearFrameClicked();
+    emit clearFrameClicked();//    QImage mirrored = image->mirrored(true, false);
+    //    *image = mirrored;
+    //    frame = this->image;
+    //    this->pixmap = new QPixmap();
+    //    pixmap->convertFromImage(*this->image);
+    //    this->setPixmap(QPixmap::fromImage(*image));
+    //    emit updateCurrentFrameDisplay();
 }
 
 void MainWindow::on_addFrameButton_clicked()
@@ -367,7 +379,7 @@ void MainWindow::on_deleteFrameButton_clicked()
                 selectedFrameItem = ui->framesListWidget->item(i);
                 QPixmap pxmap;
                 pxmap.convertFromImage(*sprite.frames.at(i));
-                QIcon newIcon(pxmap.copy(0,0,448,448));
+                QIcon newIcon(pxmap.copy(0,0,512,512));
                 selectedFrameItem->setIcon(newIcon);
             }
 
@@ -398,12 +410,15 @@ void MainWindow:: on_framesListWidget_itemClicked(QListWidgetItem *item)
     updateSelectedFrameDisplay();
 
     emit frameSelected(sprite.frames.at(sprite.currentFrame));
-
-
 }
 
-void MainWindow::on_brushSizeSlider_sliderMoved(int position)
-{
-    emit brushSliderMoved(position);
 
+void MainWindow::on_brushSizeSlider_valueChanged(int value)
+{
+    emit brushSliderMoved(value);
+}
+
+void MainWindow::on_invertButton_clicked()
+{
+    emit invertButtonClicked();
 }

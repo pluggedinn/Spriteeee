@@ -32,8 +32,14 @@ void DrawArea::mousePressEvent(QMouseEvent* event) {
 
     if (tool == 1) {            // brush
         drawPixel(event);
-    } else if (tool == 2) {      // mirror
-        drawPixel(event);
+    } else if (tool == 2) {     // flip
+        // QImage mirrored = image->mirrored(true, false);
+        // *image = mirrored;
+        // frame = this->image;
+        // this->pixmap = new QPixmap();
+        // pixmap->convertFromImage(*this->image);
+        // this->setPixmap(QPixmap::fromImage(*image));
+        // emit updateCurrentFrameDisplay();
     } else if (tool == 3) {      // erase
         drawPixel(event);
     }
@@ -50,9 +56,11 @@ void DrawArea::mouseReleaseEvent(QMouseEvent *event) {
 
 void DrawArea::drawPixel(QMouseEvent* event) {
     int posX = event->pos().x();
+    qDebug("1 + %d", posX);
     int posY = event->pos().y();
-    int column = posX / pixelSize - pixelNumber / 2;
-    int row = posY / pixelSize - pixelNumber / 2;
+    int column = (posX / pixelSize) - (pixelNumber/2);
+    qDebug("2 + %d", column);
+    int row = (posY / pixelSize) - (pixelNumber/2);
     int leftMostXPixel = pixelSize*column; //the leftmost pixel in the column
     int rightMostXPixel = leftMostXPixel + (pixelNumber * pixelSize); //the rightmost pixel in the column
     int leftMostYPixel = pixelSize*row; //the top pixel in the row
@@ -64,11 +72,7 @@ void DrawArea::drawPixel(QMouseEvent* event) {
         {
             if (tool == 1) {
                 image->setPixel(x,y,color.rgba());
-            } else if (tool == 2) {
-                int respectiveX = (pixelSize * (512 / pixelSize)) - x - 1 ; //mirror x location
-                image->setPixel(x,y,color.rgba());
-                image->setPixel(respectiveX,y,color.rgba());
-            } else if (tool == 3) {
+            }  else if (tool == 3) {
                 clearPixel(x,y);
             }
         }
@@ -190,12 +194,8 @@ void DrawArea::invertColors() {
     emit updateModelWithNewFrame(image);
 }
 
-void DrawArea::flipImage() {
-    QImage mirrored = image->mirrored(true, false);
-    *image = mirrored;
-    frame = this->image;
-    this->pixmap = new QPixmap();
-    pixmap->convertFromImage(*this->image);
-    this->setPixmap(QPixmap::fromImage(*image));
-    emit updateCurrentFrameDisplay();
+void DrawArea::mirrorImage() {
+    //int respectiveX = (pixelSize * (512 / pixelSize)) - x - 1 ; //mirror x location
+    //image->setPixel(x,y,color.rgba());
+    //image->setPixel(respectiveX,y,color.rgba());
 }

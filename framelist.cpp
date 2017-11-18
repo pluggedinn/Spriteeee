@@ -8,7 +8,7 @@ FrameList::FrameList(QObject *parent) : QObject(parent)
 }
 
 void FrameList::addFrame() {
-    QImage* emptyImage = new QImage(448,448, QImage::Format_ARGB32);
+    QImage* emptyImage = new QImage(512,512, QImage::Format_ARGB32);
     QColor color(0,0,0,0);
     emptyImage->fill(color);
     frames.append(emptyImage);
@@ -22,13 +22,13 @@ void FrameList::addFrame() {
 QString FrameList::getSaveoutput()
 {
     QString output = "";
-    int totalWidth = 448 / width;
+    int totalWidth = 512 / width;
 
     for(QImage *img : frames)
     {
-        for(int y = 1 ; y <= 448 - totalWidth+1; y = y + totalWidth)
+        for(int y = 1 ; y <= 512 - totalWidth+1; y = y + totalWidth)
         {
-            for(int x = 1 ; x <= 448 - totalWidth+1; x = x + totalWidth)
+            for(int x = 1 ; x <= 512 - totalWidth+1; x = x + totalWidth)
             {
                 QRgb rgbColor = QRgb(img->pixel(x, y));
                 if(rgbColor != 0000)

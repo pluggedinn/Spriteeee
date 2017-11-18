@@ -39,6 +39,8 @@ public slots:
     void undo();
     void redo();
     void clearDrawArea();
+    void invertColors();
+    void flipImage();
 
 protected:
     void mousePressEvent(QMouseEvent* event);

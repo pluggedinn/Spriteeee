@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "framelist.h"
+#include "gif.h"
 #include <QMessageBox>
 #include <QPushButton>
 #include <QString>
@@ -9,6 +10,8 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QTimer>
+#include <QProcess>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -111,7 +114,6 @@ void MainWindow::updateSelectedFrameDisplay()
     pxmap.convertFromImage(*sprite.frames.at(sprite.currentFrame));
     QIcon currentIcon(pxmap.copy(0,0,512,512));
     selectedFrameItem->setIcon(currentIcon);
-    isSaved = false;
 
 }
 
@@ -120,9 +122,42 @@ void MainWindow::updateSelectedFrameWithNewImage(QImage* img)
 {
     sprite.frames.replace(sprite.currentFrame, img);
     updateSelectedFrameDisplay();
-    isSaved = false;
 }
 
+void MainWindow::export_to_gif() {
+    int counter = 0;
+    QProcess proc;
+    QString process = "convert";
+    QStringList parameter_list;
+    QString delay = QString::number(100.0/ (double) 10);
+    parameter_list << "-dispose" << "background" << "-delay" << delay;
+
+    QFileDialog *fileDialog = new QFileDialog;
+//    fileDialog->setDefaultSuffix("gif");
+
+    QString filename = fileDialog->getSaveFileName(this, tr("Save File"), "");
+
+    for(QImage *img : sprite.frames) {
+        QString msg = QString ("temp%1").arg(counter);
+        img->save(msg, "PNG");
+        parameter_list << msg;
+        counter++;
+    }
+    QFileInfo convertFileInfo("/usr/bin/convert");
+
+    parameter_list << filename+".gif";
+
+    proc.start(process, parameter_list);
+    if (!(proc.waitForFinished()))
+        qDebug() << "Conversion failed:" << proc.errorString();
+    else
+        qDebug() << "Conversion output:" << proc.readAll();
+}
+
+void MainWindow::copyPreviousFrame() {
+    QImage *previousImage = new QImage(sprite.frames.at(sprite.currentFrame - 1)->copy(0,0,448,448));
+    updateSelectedFrameWithNewImage(previousImage);
+}
 
 void MainWindow::previewAnimation()
 {
@@ -160,8 +195,7 @@ void MainWindow::save()
         stream << sprite.width << " " << sprite.width << "\n";
         stream << sprite.frames.size() << "\n";
         stream << output << "\n";
-        f.close();
-        isSaved = true;
+        f.close();;
     }
 }
 
@@ -243,8 +277,6 @@ void MainWindow::load()
            sprite.frames.append(img);
        }
 
-       isSaved = true;
-
        while(ui->framesListWidget->count() > 0)
        {
            QListWidgetItem* x = ui->framesListWidget->takeItem(0);
@@ -301,6 +333,10 @@ void MainWindow::on_saveButton_clicked()
     save();
 }
 
+void MainWindow::on_exportButton_clicked() {
+    export_to_gif();
+}
+
 /**
  * @brief MainWindow::on_paintbrushToolButton_clicked
  * Selects the paint brush when clicked
@@ -336,15 +372,11 @@ void MainWindow::on_colorsButton_pressed()
 void MainWindow::on_undoButton_clicked()
 {
     emit undoButtonClicked();
-    isSaved = false;
-
 }
 
 void MainWindow::on_redoButton_clicked()
 {
     emit redoButtonClicked();
-    isSaved = false;
-
 }
 
 void MainWindow::on_clearButton_clicked()
@@ -361,10 +393,13 @@ void MainWindow::on_clearButton_clicked()
 void MainWindow::on_addFrameButton_clicked()
 {
     createEmptyFrame();
-    isSaved = false;
-
     emit frameSelected(sprite.frames.at(sprite.currentFrame));
+}
 
+void MainWindow::on_duplicateFrameButton_clicked() {
+    createEmptyFrame();
+    copyPreviousFrame();
+    emit frameSelected(sprite.frames.at(sprite.currentFrame));
 }
 
 void MainWindow::on_deleteFrameButton_clicked()

@@ -355,6 +355,16 @@ selection-background-color: rgb(200, 200, 210);</string>
     <property name="title">
      <string>File</string>
     </property>
+    <widget class="QMenu" name="menuNew">
+     <property name="title">
+      <string>New</string>
+     </property>
+     <addaction name="separator"/>
+     <addaction name="action16_Pixel_Frame"/>
+     <addaction name="action32_Pixel_Frame"/>
+     <addaction name="action64_Pixel_Frame"/>
+    </widget>
+    <addaction name="menuNew"/>
     <addaction name="actionSave_As"/>
     <addaction name="actionLoad"/>
     <addaction name="actionExport"/>
@@ -432,24 +442,9 @@ selection-background-color: rgb(200, 200, 210);</string>
     <string>Erase</string>
    </property>
   </action>
-  <action name="actionFlip">
-   <property name="text">
-    <string>Flip</string>
-   </property>
-  </action>
-  <action name="actionMirror_2">
-   <property name="text">
-    <string>Mirror</string>
-   </property>
-  </action>
   <action name="actionColor">
    <property name="text">
     <string>Color</string>
-   </property>
-  </action>
-  <action name="actionInvert">
-   <property name="text">
-    <string>Invert</string>
    </property>
   </action>
   <action name="actionColors">
@@ -480,6 +475,21 @@ selection-background-color: rgb(200, 200, 210);</string>
   <action name="actionInvert_2">
    <property name="text">
     <string>Invert</string>
+   </property>
+  </action>
+  <action name="action16_Pixel_Frame">
+   <property name="text">
+    <string>16 Pixel Frame</string>
+   </property>
+  </action>
+  <action name="action32_Pixel_Frame">
+   <property name="text">
+    <string>32 Pixel Frame</string>
+   </property>
+  </action>
+  <action name="action64_Pixel_Frame">
+   <property name="text">
+    <string>64 Pixel Frame</string>
    </property>
   </action>
  </widget>

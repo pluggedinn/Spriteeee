@@ -33,7 +33,6 @@ int main(int argc, char *argv[])
 
     drawArea.show();
     w.show();
-    w.displayFrameWidthQuestion();
 
     return a.exec();
 }

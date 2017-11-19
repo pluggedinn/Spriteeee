@@ -4,7 +4,7 @@
 FrameList::FrameList(QObject *parent) : QObject(parent)
 {
     currentFrame = -1;
-    width = 32;
+    spriteSize = 32;
 }
 
 void FrameList::addFrame() {
@@ -22,7 +22,7 @@ void FrameList::addFrame() {
 QString FrameList::getSaveoutput()
 {
     QString output = "";
-    int totalWidth = 512 / width;
+    int totalWidth = 512 / spriteSize;
 
     for(QImage *img : frames)
     {

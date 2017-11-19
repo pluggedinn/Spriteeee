@@ -10,7 +10,7 @@ public:
 
     QList<QImage*> frames;
     int currentFrame;
-    int width;
+    int spriteSize;
     void addFrame();
     QString getSaveoutput();
 

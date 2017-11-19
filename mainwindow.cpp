@@ -49,31 +49,6 @@ void MainWindow::createEmptyFrame() {
     ui->framesListWidget->update();
 }
 
-/**
- * @brief MainWindow::displayFrameWidthQuestion
- * Shows a prompt that let you choose between the diffent size of the frames available.
- */
-void MainWindow::displayFrameWidthQuestion() {
-    QMessageBox question;
-    question.setText(trUtf8("New Project"));
-    question.setInformativeText("Choose the frame size");
-    QAbstractButton *size64 = question.addButton(trUtf8("64"), QMessageBox::YesRole);
-    QAbstractButton *size32 = question.addButton(trUtf8("32"), QMessageBox::NoRole);
-    QAbstractButton *size16 = question.addButton(trUtf8("16"), QMessageBox::ResetRole);
-    question.setIcon(QMessageBox::Question);
-    question.exec();
-
-    if (question.clickedButton() == size16) {
-        emit setSizeFrame(16);
-        sprite.width = 16;
-    } else if (question.clickedButton() == size32) {
-        emit setSizeFrame(32);
-        sprite.width = 32;
-    } else {
-        emit setSizeFrame(64);
-        sprite.width = 64;
-    }
-}
 
 void MainWindow::updateToolButton(int button)
 {
@@ -155,7 +130,7 @@ void MainWindow::export_to_gif() {
 }
 
 void MainWindow::copyPreviousFrame() {
-    QImage *previousImage = new QImage(sprite.frames.at(sprite.currentFrame - 1)->copy(0,0,448,448));
+    QImage *previousImage = new QImage(sprite.frames.at(sprite.currentFrame - 1)->copy(0,0,512,512));
     updateSelectedFrameWithNewImage(previousImage);
 }
 
@@ -192,7 +167,7 @@ void MainWindow::save()
     if(f.open(QIODevice::WriteOnly))
     {
         QTextStream stream( &f );
-        stream << sprite.width << " " << sprite.width << "\n";
+        stream << sprite.spriteSize << " " << sprite.spriteSize << "\n";
         stream << sprite.frames.size() << "\n";
         stream << output << "\n";
         f.close();;
@@ -220,8 +195,8 @@ void MainWindow::load()
           QString line = in.readLine();
           if(count == 0)
           {
-              sprite.width = line.split(" ")[0].toInt();
-              emit updateFrameSize(sprite.width);
+              sprite.spriteSize = line.split(" ")[0].toInt();
+              emit updateFrameSize(sprite.spriteSize);
           }
           else if (count == 1)
           {
@@ -233,9 +208,9 @@ void MainWindow::load()
        for (int frame = 0; frame < framesCount; frame++)
        {
            QImage *img = new QImage(512, 512, QImage::Format_ARGB32);
-           for (int row = 0; row < sprite.width; row++){
+           for (int row = 0; row < sprite.spriteSize; row++){
                QString line = in.readLine();
-               for (int column = 0; column < sprite.width; column++)
+               for (int column = 0; column < sprite.spriteSize; column++)
                {
                    QColor color;
                    int red;
@@ -259,7 +234,7 @@ void MainWindow::load()
                        }
                    }
                    color = QColor(red, green, blue, alpha);
-                   int pixelWidth = 512 / sprite.width;
+                   int pixelWidth = 512 / sprite.spriteSize;
                    int startingXPixel = pixelWidth*column; //the leftmost pixel in the column
                    int endingXPixel = startingXPixel + pixelWidth; //the rightmost pixel in the column
                    int startingYPixel = pixelWidth*row; //the top pixel in the row
@@ -360,13 +335,7 @@ void MainWindow::on_redoButton_clicked()
 
 void MainWindow::on_clearButton_clicked()
 {
-    emit clearFrameClicked();//    QImage mirrored = image->mirrored(true, false);
-    //    *image = mirrored;
-    //    frame = this->image;
-    //    this->pixmap = new QPixmap();
-    //    pixmap->convertFromImage(*this->image);
-    //    this->setPixmap(QPixmap::fromImage(*image));
-    //    emit updateCurrentFrameDisplay();
+    emit clearFrameClicked();
 }
 
 void MainWindow::on_addFrameButton_clicked()
@@ -415,12 +384,9 @@ void MainWindow::on_deleteFrameButton_clicked()
 
 void MainWindow:: on_framesListWidget_itemClicked(QListWidgetItem *item)
 {
-    updateSelectedFrameDisplay();
-
     int newFrameNumber = item->text().toInt();
     sprite.currentFrame = newFrameNumber - 1;
     selectedFrameItem = item;
-
     updateSelectedFrameDisplay();
 
     emit frameSelected(sprite.frames.at(sprite.currentFrame));
@@ -450,4 +416,77 @@ void MainWindow::on_actionLoad_triggered()
 void MainWindow::on_actionExport_triggered()
 {
     export_to_gif();
+}
+
+void MainWindow::on_actionUndo_triggered()
+{
+    emit undoButtonClicked();
+}
+
+void MainWindow::on_actionRedo_triggered()
+{
+    emit redoButtonClicked();
+}
+
+void MainWindow::on_actionBrush_triggered()
+{
+    updateToolButton(1);
+}
+
+void MainWindow::on_actionMirror_triggered()
+{
+    updateToolButton(2);
+}
+
+void MainWindow::on_actionErase_triggered()
+{
+    updateToolButton(3);
+}
+
+void MainWindow::on_actionFlip_triggered()
+{
+    emit flipButtonClicked();
+}
+
+void MainWindow::on_actionFlip_2_triggered()
+{
+    emit flipButtonClicked();
+}
+
+void MainWindow::on_actionInvert_2_triggered()
+{
+    emit invertButtonClicked();
+}
+
+void MainWindow::on_actionClear_triggered()
+{
+    emit clearFrameClicked();
+}
+
+void MainWindow::on_action16_Pixel_Frame_triggered()
+{
+    newProject(16);
+}
+
+void MainWindow::on_action32_Pixel_Frame_triggered()
+{
+    newProject(32);
+}
+
+void MainWindow::on_action64_Pixel_Frame_triggered()
+{
+    newProject(64);
+}
+
+void MainWindow::newProject(int size)
+{
+    numFrames = 0;
+    sprite.frames.clear();
+    ui->framesListWidget->clear();
+    createEmptyFrame();
+    sprite.currentFrame = 0;
+    sprite.spriteSize = size;
+    emit setSizeFrame(size);
+    emit frameSelected(sprite.frames.at(sprite.currentFrame));
+
 }

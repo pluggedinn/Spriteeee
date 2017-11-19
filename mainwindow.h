@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QPixmap>
-#include "framelist.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,7 +16,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    FrameList sprite;
     QList<QImage*> frames;
     void updateToolButton(int button);
     void save();

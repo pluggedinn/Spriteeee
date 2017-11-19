@@ -26,13 +26,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    drawarea.cpp \
-    framelist.cpp
+    drawarea.cpp
 
 HEADERS += \
         mainwindow.h \
-    drawarea.h \
-    framelist.h
+    drawarea.h
 
 FORMS += \
         mainwindow.ui

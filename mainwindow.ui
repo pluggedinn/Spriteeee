@@ -303,7 +303,7 @@ selection-background-color: rgb(200, 200, 210);</string>
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>395</y>
+      <y>445</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -355,7 +355,7 @@ selection-background-color: rgb(200, 200, 210);</string>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>430</y>
+      <y>480</y>
       <width>51</width>
       <height>51</height>
      </rect>
@@ -429,6 +429,25 @@ selection-background-color: rgb(200, 200, 210);</string>
     </property>
     <property name="scaledContents">
      <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="selectedColorButton">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>390</y>
+      <width>51</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	border-radius: 7px;
+	background-color: rgb(0, 0, 0);
+}</string>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "framelist.h"
 #include <QMessageBox>
 #include <QPushButton>
 #include <QString>
@@ -106,7 +105,6 @@ void MainWindow::export_to_gif()
     parameter_list << "-dispose" << "background" << "-delay" << delay;
 
     QFileDialog *fileDialog = new QFileDialog;
-//    fileDialog->setDefaultSuffix("gif");
 
     QString filename = fileDialog->getSaveFileName(this, tr("Save File"), "");
 
@@ -158,7 +156,6 @@ void MainWindow::previewAnimation()
 
 void MainWindow::restartPreview()
 {
-    qDebug("and");
     previewAnimation();
 }
 
@@ -177,11 +174,7 @@ void MainWindow::save()
                 QRgb rgbColor = QRgb(img->pixel(x, y));
                 if(rgbColor != 0000) {
                     QColor color = QColor(rgbColor);
-                    data += "" + QString::number(color.red());
-                    data += " " + QString::number(color.green());
-                    data += " " + QString::number(color.blue());
-                    data += " " + QString::number(color.alpha());
-                    data += " ";
+                    data += "" + QString::number(color.red()) + " " + QString::number(color.green()) + " " + QString::number(color.blue()) + " " + QString::number(color.alpha()) + " ";
                 }
                 else
                 {
@@ -200,9 +193,7 @@ void MainWindow::save()
     if(f.open(QIODevice::WriteOnly))
     {
         QTextStream stream( &f );
-        stream << spriteSize << " " << spriteSize << "\n";
-        stream << frames.size() << "\n";
-        stream << data << "\n";
+        stream << spriteSize << " " << spriteSize << "\n" << frames.size() << "\n" << data << "\n";
         f.close();;
     }
 }
@@ -271,16 +262,17 @@ void MainWindow::load()
                            alpha = line.split(" ")[column * 4 + 3].toInt();
                        }
                    }
-                   color = QColor(red, green, blue, alpha);
-                   int pixelWidth = 512 / spriteSize;
-                   int startingXPixel = pixelWidth*column; //the leftmost pixel in the column
-                   int endingXPixel = startingXPixel + pixelWidth; //the rightmost pixel in the column
-                   int startingYPixel = pixelWidth*row; //the top pixel in the row
-                   int endingYPixel = startingYPixel + pixelWidth; //the bottom pixel in the row
 
-                   for(int x = startingXPixel; x < endingXPixel; x++)
+                   color = QColor(red, green, blue, alpha);
+                   int size = 512 / spriteSize;
+                   int leftmostX = size*column; //the leftmost pixel in the column
+                   int rightmostX = leftmostX + size; //the rightmost pixel in the column
+                   int leftmostY = size*row; //the top pixel in the row
+                   int rightmostY = leftmostY + size; //the bottom pixel in the row
+
+                   for(int x = leftmostX; x < rightmostX; x++)
                    {
-                       for(int y = startingYPixel; y < endingYPixel; y++)
+                       for(int y = leftmostY; y < rightmostY; y++)
                        {
                            img->setPixel(x,y,color.rgba());
                        }
@@ -350,6 +342,7 @@ void MainWindow::on_flipToolButton_clicked()
 void MainWindow::on_colorsButton_pressed()
 {
     color = QColorDialog::getColor();
+    ui->selectedColorButton->setStyleSheet("border-radius: 7px; background-color: " + color.name() + ";");
     emit selectedColor(color);
 }
 

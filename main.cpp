@@ -8,8 +8,8 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
 
-    QFrame *paintFramePtr = w.findChild<QFrame*>("paintFrame");
-    DrawArea drawArea(paintFramePtr, w.frames[0]);
+    QFrame *paintFrame = w.findChild<QFrame*>("paintFrame");
+    DrawArea drawArea(paintFrame, w.frames[0]);
     drawArea.setGeometry(0,0,512,512);
 
     QObject::connect(&w, SIGNAL(previewFinished()), &w, SLOT(restartPreview()));

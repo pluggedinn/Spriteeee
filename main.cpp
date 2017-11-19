@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     QFrame *paintFramePtr = w.findChild<QFrame*>("paintFrame");
-    DrawArea drawArea(paintFramePtr, w.sprite.frames[0]);
+    DrawArea drawArea(paintFramePtr, w.frames[0]);
     drawArea.setGeometry(0,0,512,512);
 
     QObject::connect(&w, SIGNAL(previewFinished()), &w, SLOT(restartPreview()));

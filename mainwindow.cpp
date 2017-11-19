@@ -31,6 +31,9 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->brushToolButton->setIcon(icon);
     }
 
+    currentFrameNum = -1;
+    spriteSize = 32;
+
     numFrames = 0;
     createEmptyFrame();
 
@@ -45,53 +48,35 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::createEmptyFrame() {
+void MainWindow::addFrame()
+{
+    QImage* emptyImage = new QImage(512,512, QImage::Format_ARGB32);
+    QColor color(0,0,0,0);
+    emptyImage->fill(color);
+    frames.append(emptyImage);
+}
+
+void MainWindow::createEmptyFrame()
+{
     numFrames++;
     currentFrame = new QPixmap(450,450);
-    sprite.addFrame();
+    addFrame();
 
     QListWidgetItem* item = new QListWidgetItem(QString::number(numFrames), 0);
     item->setText(QString::number(numFrames));
     ui->framesListWidget->addItem(item);
     ui->framesListWidget->item(numFrames - 1)->setSelected(true);
     selectedFrameItem = item;
-    currentFrame->convertFromImage(*sprite.frames.at(numFrames-1));
+    currentFrame->convertFromImage(*frames.at(numFrames-1));
     QIcon currentIcon(currentFrame->copy(0,0,512,512));
     item->setIcon(currentIcon);
-    sprite.currentFrame = numFrames - 1;
+    currentFrameNum = numFrames - 1;
     ui->framesListWidget->update();
 }
 
 
 void MainWindow::updateToolButton(int button)
 {
-    // brush
-    if (button == 1)
-    {
-        ui->brushToolButton->setChecked(true);
-        ui->flipToolButton->setChecked(false);
-        ui->eraseButton->setChecked(false);
-
-    }
-    // flip
-    else if (button == 2)
-    {
-        ui->brushToolButton->setChecked(false);
-        ui->flipToolButton->setChecked(true);
-        ui->eraseButton->setChecked(false);
-
-    }
-    // erase
-    else if (button == 3) {
-        ui->brushToolButton->setChecked(false);
-        ui->flipToolButton->setChecked(false);
-        ui->eraseButton->setChecked(true);
-    }
-
-    ui->brushToolButton->update();
-    ui->flipToolButton->update();
-    ui->eraseButton->update();
-
     emit toolClicked(button);
 }
 
@@ -99,7 +84,7 @@ void MainWindow::updateToolButton(int button)
 void MainWindow::updateSelectedFrameDisplay()
 {
     QPixmap pxmap;
-    pxmap.convertFromImage(*sprite.frames.at(sprite.currentFrame));
+    pxmap.convertFromImage(*frames.at(currentFrameNum));
     QIcon currentIcon(pxmap.copy(0,0,512,512));
     selectedFrameItem->setIcon(currentIcon);
 
@@ -108,11 +93,12 @@ void MainWindow::updateSelectedFrameDisplay()
 
 void MainWindow::updateSelectedFrameWithNewImage(QImage* img)
 {
-    sprite.frames.replace(sprite.currentFrame, img);
+    frames.replace(currentFrameNum, img);
     updateSelectedFrameDisplay();
 }
 
-void MainWindow::export_to_gif() {
+void MainWindow::export_to_gif()
+{
     int counter = 0;
     QProcess proc;
     QString process = "convert";
@@ -125,7 +111,8 @@ void MainWindow::export_to_gif() {
 
     QString filename = fileDialog->getSaveFileName(this, tr("Save File"), "");
 
-    for(QImage *img : sprite.frames) {
+    for(QImage *img : frames)
+    {
         QString msg = QString ("temp%1").arg(counter);
         img->save(msg, "PNG");
         parameter_list << msg;
@@ -137,23 +124,32 @@ void MainWindow::export_to_gif() {
 
     proc.start(process, parameter_list);
     if (!(proc.waitForFinished()))
+    {
         qDebug() << "Conversion failed:" << proc.errorString();
+    }
     else
+    {
         qDebug() << "Conversion output:" << proc.readAll();
+    }
 }
 
-void MainWindow::copyPreviousFrame() {
-    QImage *previousImage = new QImage(sprite.frames.at(sprite.currentFrame - 1)->copy(0,0,512,512));
+void MainWindow::copyPreviousFrame()
+{
+    QImage *previousImage = new QImage(frames.at(currentFrameNum - 1)->copy(0,0,512,512));
     updateSelectedFrameWithNewImage(previousImage);
 }
 
 void MainWindow::previewAnimation()
 {
-    if (previewFrame < sprite.frames.size() - 1)
+    if (previewFrame < frames.size() - 1)
+    {
         previewFrame++;
+    }
     else
+    {
         previewFrame = 0;
-    QImage* previewImage = sprite.frames[previewFrame];
+    }
+    QImage* previewImage = frames[previewFrame];
     QImage preview;
     preview = (previewImage->scaled(128,128));
     ui->previewFrame->setAlignment(Qt::AlignCenter);
@@ -169,13 +165,16 @@ void MainWindow::restartPreview()
 
 void MainWindow::save()
 {
-    int totalWidth = 512 / sprite.spriteSize;
+    int totalWidth = 512 / spriteSize;
     int relativeWidth = 512 - totalWidth+1;
 
     QString data = "";
-    for(QImage *img : sprite.frames) {
-        for(int y = 1 ; y <= relativeWidth; y = y + totalWidth) {
-            for(int x = 1 ; x <= relativeWidth; x = x + totalWidth) {
+    for(QImage *img : frames)
+    {
+        for(int y = 1 ; y <= relativeWidth; y = y + totalWidth)
+        {
+            for(int x = 1 ; x <= relativeWidth; x = x + totalWidth)
+            {
                 QRgb rgbColor = QRgb(img->pixel(x, y));
                 if(rgbColor != 0000) {
                     QColor color = QColor(rgbColor);
@@ -184,7 +183,9 @@ void MainWindow::save()
                     data += " " + QString::number(color.blue());
                     data += " " + QString::number(color.alpha());
                     data += " ";
-                } else {
+                }
+                else
+                {
                     data += "0 0 0 0 ";
                 }
             }
@@ -200,24 +201,21 @@ void MainWindow::save()
     if(f.open(QIODevice::WriteOnly))
     {
         QTextStream stream( &f );
-        stream << sprite.spriteSize << " " << sprite.spriteSize << "\n";
-        stream << sprite.frames.size() << "\n";
+        stream << spriteSize << " " << spriteSize << "\n";
+        stream << frames.size() << "\n";
         stream << data << "\n";
         f.close();;
     }
 }
 
-/**
- * @brief MainWindow::open
- * Opens a .ssp file and converts it into the frames that comprise a project
- */
+
 void MainWindow::load()
 {
     QString filename = QFileDialog::getOpenFileName(this, "Select a file to open", QDir::homePath());
     QFile f(filename);
     if (f.open(QIODevice::ReadOnly))
     {
-       sprite.frames.clear();
+       frames.clear();
        while(ui->framesListWidget->count() > 0)
        {
            QListWidgetItem* x = ui->framesListWidget->takeItem(0);
@@ -232,7 +230,7 @@ void MainWindow::load()
           QString line = stream.readLine();
           if(count == 0)
           {
-              sprite.spriteSize = line.split(" ")[0].toInt();
+              spriteSize = line.split(" ")[0].toInt();
           }
           else if (count == 1)
           {
@@ -240,33 +238,42 @@ void MainWindow::load()
           }
           count++;
        }
-       emit updateFrameSize(sprite.spriteSize);
+       emit updateFrameSize(spriteSize);
 
        for (int frame = 0; frame < framesCount; frame++)
        {
            QImage *img = new QImage(512, 512, QImage::Format_ARGB32);
-           for (int row = 0; row < sprite.spriteSize; row++){
+           for (int row = 0; row < spriteSize; row++)
+           {
                QString line = stream.readLine();
-               for (int column = 0; column < sprite.spriteSize; column++)
+               for (int column = 0; column < spriteSize; column++)
                {
                    QColor color;
                    int red;
                    int green;
                    int blue;
                    int alpha;
-                   for (int i = 0; i < 4; i++) {
-                       if (i == 0) {
+                   for (int i = 0; i < 4; i++)
+                   {
+                       if (i == 0)
+                       {
                            red = line.split(" ")[column * 4].toInt();
-                       } else if(i == 1) {
+                       }
+                       else if(i == 1)
+                       {
                            green = line.split(" ")[column * 4 + 1].toInt();
-                       } else if (i == 2) {
+                       }
+                       else if (i == 2)
+                       {
                            blue = line.split(" ")[column * 4 + 2].toInt();
-                       } else if (i == 3) {
+                       }
+                       else if (i == 3)
+                       {
                            alpha = line.split(" ")[column * 4 + 3].toInt();
                        }
                    }
                    color = QColor(red, green, blue, alpha);
-                   int pixelWidth = 512 / sprite.spriteSize;
+                   int pixelWidth = 512 / spriteSize;
                    int startingXPixel = pixelWidth*column; //the leftmost pixel in the column
                    int endingXPixel = startingXPixel + pixelWidth; //the rightmost pixel in the column
                    int startingYPixel = pixelWidth*row; //the top pixel in the row
@@ -281,13 +288,11 @@ void MainWindow::load()
                    }
                }
            }
-           sprite.frames.append(img);
+           frames.append(img);
        }
 
-
-
        int numFrames = 0;
-       for(int i = 0; i < sprite.frames.length() ; i++)
+       for(int i = 0; i < frames.length() ; i++)
        {
            numFrames++;
            currentFrame = new QPixmap(512, 512);
@@ -295,7 +300,7 @@ void MainWindow::load()
            QListWidgetItem* item = new QListWidgetItem(QString::number(i+1), 0);
            item->setText(QString::number(i+1));
            ui->framesListWidget->addItem(item);
-           currentFrame->convertFromImage(*sprite.frames.at(i));
+           currentFrame->convertFromImage(*frames.at(i));
            QIcon currentIcon(currentFrame->copy(0, 0, 512, 512));
            item->setIcon(currentIcon);
            repaint();
@@ -305,7 +310,7 @@ void MainWindow::load()
        {
            selectedFrameItem = ui->framesListWidget->item(i);
            QPixmap pxmap;
-           pxmap.convertFromImage(*sprite.frames.at(i));
+           pxmap.convertFromImage(*frames.at(i));
            QIcon newIcon(pxmap.copy(0,0,512,512));
            selectedFrameItem->setIcon(newIcon);
            ui->framesListWidget->update();
@@ -313,8 +318,7 @@ void MainWindow::load()
 
        selectedFrameItem =  ui->framesListWidget->item(0);
        selectedFrameItem->setSelected(true);
-       emit frameSelected(sprite.frames.at(0));
-
+       emit frameSelected(frames.at(0));
     }
 }
 
@@ -348,7 +352,6 @@ void MainWindow::on_colorsButton_pressed()
 {
     color = QColorDialog::getColor();
     emit selectedColor(color);
-    ui->colorsButton->setChecked(false);
 }
 
 void MainWindow::on_undoButton_clicked()
@@ -369,39 +372,40 @@ void MainWindow::on_clearButton_clicked()
 void MainWindow::on_addFrameButton_clicked()
 {
     createEmptyFrame();
-    emit frameSelected(sprite.frames.at(sprite.currentFrame));
+    emit frameSelected(frames.at(currentFrameNum));
 }
 
-void MainWindow::on_duplicateFrameButton_clicked() {
+void MainWindow::on_duplicateFrameButton_clicked()
+{
     createEmptyFrame();
     copyPreviousFrame();
-    emit frameSelected(sprite.frames.at(sprite.currentFrame));
+    emit frameSelected(frames.at(currentFrameNum));
 }
 
 void MainWindow::on_deleteFrameButton_clicked()
 {
-    if(sprite.frames.count() > 1)
+    if(frames.count() > 1)
     {
-         if (ui->framesListWidget->item(sprite.currentFrame)->text()  != "addFrame")
+         if (ui->framesListWidget->item(currentFrameNum)->text()  != "addFrame")
          {
-            sprite.frames.removeAt(sprite.currentFrame);
+            frames.removeAt(currentFrameNum);
             for(int i = 0; i < numFrames-1; i++)
             {
                 selectedFrameItem = ui->framesListWidget->item(i);
                 QPixmap pxmap;
-                pxmap.convertFromImage(*sprite.frames.at(i));
+                pxmap.convertFromImage(*frames.at(i));
                 QIcon newIcon(pxmap.copy(0,0,512,512));
                 selectedFrameItem->setIcon(newIcon);
             }
 
-            QListWidgetItem *item = ui->framesListWidget->item(sprite.frames.length());
+            QListWidgetItem *item = ui->framesListWidget->item(frames.length());
             delete item;
-            if(sprite.currentFrame >= sprite.frames.count()){
-                sprite.currentFrame--;
+            if(currentFrameNum >= frames.count()){
+                currentFrameNum--;
             }
-            selectedFrameItem =  ui->framesListWidget->item(sprite.currentFrame);
+            selectedFrameItem =  ui->framesListWidget->item(currentFrameNum);
             selectedFrameItem->setSelected(true);
-            emit frameSelected(sprite.frames.at(sprite.currentFrame));
+            emit frameSelected(frames.at(currentFrameNum));
 
             numFrames--;
             repaint();
@@ -413,11 +417,11 @@ void MainWindow::on_deleteFrameButton_clicked()
 void MainWindow:: on_framesListWidget_itemClicked(QListWidgetItem *item)
 {
     int newFrameNumber = item->text().toInt();
-    sprite.currentFrame = newFrameNumber - 1;
+    currentFrameNum = newFrameNumber - 1;
     selectedFrameItem = item;
     updateSelectedFrameDisplay();
 
-    emit frameSelected(sprite.frames.at(sprite.currentFrame));
+    emit frameSelected(frames.at(currentFrameNum));
 }
 
 
@@ -509,12 +513,17 @@ void MainWindow::on_action64_Pixel_Frame_triggered()
 void MainWindow::newProject(int size)
 {
     numFrames = 0;
-    sprite.frames.clear();
+    frames.clear();
     ui->framesListWidget->clear();
     createEmptyFrame();
-    sprite.currentFrame = 0;
-    sprite.spriteSize = size;
+    currentFrameNum = 0;
+    spriteSize = size;
     emit setSizeFrame(size);
-    emit frameSelected(sprite.frames.at(sprite.currentFrame));
+    emit frameSelected(frames.at(currentFrameNum));
+}
 
+void MainWindow::on_actionColors_triggered()
+{
+    color = QColorDialog::getColor();
+    emit selectedColor(color);
 }

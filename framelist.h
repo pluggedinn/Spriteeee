@@ -12,7 +12,6 @@ public:
     int currentFrame;
     int spriteSize;
     void addFrame();
-    QString getSaveoutput();
 
 signals:
 

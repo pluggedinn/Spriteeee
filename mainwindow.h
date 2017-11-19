@@ -18,6 +18,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     FrameList sprite;
+    QList<QImage*> frames;
     void updateToolButton(int button);
     void save();
     void load();
@@ -69,6 +70,7 @@ private slots:
     void on_action16_Pixel_Frame_triggered();
     void on_action32_Pixel_Frame_triggered();
     void on_action64_Pixel_Frame_triggered();
+    void on_actionColors_triggered();
 
 public slots:
     void updateSelectedFrameDisplay();
@@ -84,6 +86,9 @@ private:
     QColor color;
     QPixmap *currentFrame;
     QTimer *nextFrame;
+    int currentFrameNum;
+    int spriteSize;
+    void addFrame();
     int previewFrame;
     int numFrames;
 };

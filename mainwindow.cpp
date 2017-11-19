@@ -149,7 +149,6 @@ void MainWindow::copyPreviousFrame() {
 
 void MainWindow::previewAnimation()
 {
-    qDebug("preview updated");
     if (previewFrame < sprite.frames.size() - 1)
         previewFrame++;
     else
@@ -170,11 +169,32 @@ void MainWindow::restartPreview()
 
 void MainWindow::save()
 {
-    QString output = sprite.getSaveoutput();
-    QFileDialog *fileDialog = new QFileDialog;
-    fileDialog->setDefaultSuffix("ssp");
+    int totalWidth = 512 / sprite.spriteSize;
+    int relativeWidth = 512 - totalWidth+1;
 
-    QString filename = fileDialog->getSaveFileName(this, tr("Save File"), "");
+    QString data = "";
+    for(QImage *img : sprite.frames) {
+        for(int y = 1 ; y <= relativeWidth; y = y + totalWidth) {
+            for(int x = 1 ; x <= relativeWidth; x = x + totalWidth) {
+                QRgb rgbColor = QRgb(img->pixel(x, y));
+                if(rgbColor != 0000) {
+                    QColor color = QColor(rgbColor);
+                    data += "" + QString::number(color.red());
+                    data += " " + QString::number(color.green());
+                    data += " " + QString::number(color.blue());
+                    data += " " + QString::number(color.alpha());
+                    data += " ";
+                } else {
+                    data += "0 0 0 0 ";
+                }
+            }
+            data += "\n";
+        }
+    }
+
+    QFileDialog *dialog = new QFileDialog;
+    dialog->setDefaultSuffix("ssp");
+    QString filename = dialog->getSaveFileName(this, tr("Save as"), "");
 
     QFile f(filename);
     if(f.open(QIODevice::WriteOnly))
@@ -182,7 +202,7 @@ void MainWindow::save()
         QTextStream stream( &f );
         stream << sprite.spriteSize << " " << sprite.spriteSize << "\n";
         stream << sprite.frames.size() << "\n";
-        stream << output << "\n";
+        stream << data << "\n";
         f.close();;
     }
 }
@@ -197,19 +217,22 @@ void MainWindow::load()
     QFile f(filename);
     if (f.open(QIODevice::ReadOnly))
     {
-
        sprite.frames.clear();
+       while(ui->framesListWidget->count() > 0)
+       {
+           QListWidgetItem* x = ui->framesListWidget->takeItem(0);
+           delete x;
+       }
 
-       QTextStream in(&f);
+       QTextStream stream(&f);
        int framesCount = 0;
        int count = 0;
-       while (!in.atEnd() && count < 2)
+       while (!stream.atEnd() && count < 2)
        {
-          QString line = in.readLine();
+          QString line = stream.readLine();
           if(count == 0)
           {
               sprite.spriteSize = line.split(" ")[0].toInt();
-              emit updateFrameSize(sprite.spriteSize);
           }
           else if (count == 1)
           {
@@ -217,12 +240,13 @@ void MainWindow::load()
           }
           count++;
        }
+       emit updateFrameSize(sprite.spriteSize);
 
        for (int frame = 0; frame < framesCount; frame++)
        {
            QImage *img = new QImage(512, 512, QImage::Format_ARGB32);
            for (int row = 0; row < sprite.spriteSize; row++){
-               QString line = in.readLine();
+               QString line = stream.readLine();
                for (int column = 0; column < sprite.spriteSize; column++)
                {
                    QColor color;
@@ -230,20 +254,15 @@ void MainWindow::load()
                    int green;
                    int blue;
                    int alpha;
-                   for (int l = 0; l < 4; l++) {
-                       switch(l) {
-                       case 0:
+                   for (int i = 0; i < 4; i++) {
+                       if (i == 0) {
                            red = line.split(" ")[column * 4].toInt();
-                           break;
-                       case 1:
+                       } else if(i == 1) {
                            green = line.split(" ")[column * 4 + 1].toInt();
-                           break;
-                       case 2:
+                       } else if (i == 2) {
                            blue = line.split(" ")[column * 4 + 2].toInt();
-                           break;
-                       case 3:
+                       } else if (i == 3) {
                            alpha = line.split(" ")[column * 4 + 3].toInt();
-                           break;
                        }
                    }
                    color = QColor(red, green, blue, alpha);
@@ -265,11 +284,7 @@ void MainWindow::load()
            sprite.frames.append(img);
        }
 
-       while(ui->framesListWidget->count() > 0)
-       {
-           QListWidgetItem* x = ui->framesListWidget->takeItem(0);
-           delete x;
-       }
+
 
        int numFrames = 0;
        for(int i = 0; i < sprite.frames.length() ; i++)
@@ -293,13 +308,13 @@ void MainWindow::load()
            pxmap.convertFromImage(*sprite.frames.at(i));
            QIcon newIcon(pxmap.copy(0,0,512,512));
            selectedFrameItem->setIcon(newIcon);
+           ui->framesListWidget->update();
        }
 
        selectedFrameItem =  ui->framesListWidget->item(0);
        selectedFrameItem->setSelected(true);
        emit frameSelected(sprite.frames.at(0));
 
-       ui->framesListWidget->update();
     }
 }
 

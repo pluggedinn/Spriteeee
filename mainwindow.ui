@@ -55,7 +55,7 @@ background-color: rgb(255, 255, 255);</string>
    <widget class="QPushButton" name="brushToolButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>50</x>
       <y>26</y>
       <width>51</width>
       <height>51</height>
@@ -68,20 +68,40 @@ button-&gt;setIcon(ButtonIcon);
 button-&gt;setIconSize(pixmap.rect().size());</string>
     </property>
     <property name="text">
-     <string>Brush</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/brush/brush.png</normaloff>:/brush/brush.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>25</width>
+      <height>25</height>
+     </size>
     </property>
    </widget>
    <widget class="QPushButton" name="flipToolButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>50</x>
       <y>270</y>
       <width>51</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>Flip</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/flip/flip.png</normaloff>:/flip/flip.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>26</width>
+      <height>26</height>
+     </size>
     </property>
    </widget>
    <widget class="QListWidget" name="framesListWidget">
@@ -154,53 +174,93 @@ selection-background-color: rgb(200, 200, 210);</string>
    <widget class="QPushButton" name="colorsButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>50</x>
       <y>330</y>
       <width>51</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>Colors</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/colors/colors.png</normaloff>:/colors/colors.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>25</width>
+      <height>25</height>
+     </size>
     </property>
    </widget>
    <widget class="QPushButton" name="undoButton">
     <property name="geometry">
      <rect>
-      <x>690</x>
+      <x>700</x>
       <y>20</y>
       <width>51</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>Undo</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/undo/undo.png</normaloff>:/undo/undo.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>20</width>
+      <height>20</height>
+     </size>
     </property>
    </widget>
    <widget class="QPushButton" name="redoButton">
     <property name="geometry">
      <rect>
-      <x>780</x>
+      <x>770</x>
       <y>20</y>
       <width>51</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>Redo</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/redo/redo.png</normaloff>:/redo/redo.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>20</width>
+      <height>20</height>
+     </size>
     </property>
    </widget>
    <widget class="QPushButton" name="mirrorButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>50</x>
       <y>86</y>
       <width>51</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>Mirror</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/mirror/mirror.png</normaloff>:/mirror/mirror.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>36</width>
+      <height>36</height>
+     </size>
     </property>
    </widget>
    <widget class="QPushButton" name="addFrameButton">
@@ -219,14 +279,24 @@ selection-background-color: rgb(200, 200, 210);</string>
    <widget class="QPushButton" name="eraseButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>50</x>
       <y>150</y>
       <width>51</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>Erase</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/erase/erase.png</normaloff>:/erase/erase.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>26</width>
+      <height>26</height>
+     </size>
     </property>
    </widget>
    <widget class="QSlider" name="brushSizeSlider">
@@ -284,27 +354,47 @@ selection-background-color: rgb(200, 200, 210);</string>
    <widget class="QPushButton" name="clearButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>446</y>
-      <width>111</width>
-      <height>31</height>
+      <x>50</x>
+      <y>430</y>
+      <width>51</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>Clear frame</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/cross/cross.png</normaloff>:/cross/cross.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>20</width>
+      <height>20</height>
+     </size>
     </property>
    </widget>
    <widget class="QPushButton" name="invertButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>50</x>
       <y>210</y>
       <width>51</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>Invert</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/invert/invert.png</normaloff>:/invert/invert.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
     </property>
    </widget>
    <widget class="QLabel" name="previewFrame">
@@ -494,6 +584,8 @@ selection-background-color: rgb(200, 200, 210);</string>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="icons/icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

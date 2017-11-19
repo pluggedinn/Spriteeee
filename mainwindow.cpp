@@ -12,12 +12,25 @@
 #include <QTimer>
 #include <QProcess>
 #include <QDebug>
+#include <QIcon>
+#include <QPixmap>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QIcon icon;
+    QPixmap qpm;
+
+    if(qpm.load(":icons/brush.png"))
+    {
+        qDebug("hello");
+        icon.addPixmap(qpm);
+        ui->brushToolButton->setIcon(icon);
+    }
+
     numFrames = 0;
     createEmptyFrame();
 

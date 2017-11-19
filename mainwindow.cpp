@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "framelist.h"
-#include "gif.h"
 #include <QMessageBox>
 #include <QPushButton>
 #include <QString>

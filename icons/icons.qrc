@@ -1,1 +1,29 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/brush">
+        <file>brush.png</file>
+    </qresource>
+    <qresource prefix="/colors">
+        <file>colors.png</file>
+    </qresource>
+    <qresource prefix="/cross">
+        <file>cross.png</file>
+    </qresource>
+    <qresource prefix="/erase">
+        <file>erase.png</file>
+    </qresource>
+    <qresource prefix="/flip">
+        <file>flip.png</file>
+    </qresource>
+    <qresource prefix="/invert">
+        <file>invert.png</file>
+    </qresource>
+    <qresource prefix="/mirror">
+        <file>mirror.png</file>
+    </qresource>
+    <qresource prefix="/redo">
+        <file>redo.png</file>
+    </qresource>
+    <qresource prefix="/undo">
+        <file>undo.png</file>
+    </qresource>
+</RCC>

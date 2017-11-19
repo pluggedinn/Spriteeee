@@ -71,8 +71,8 @@ button-&gt;setIconSize(pixmap.rect().size());</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>icons/brush.png</normaloff>icons/brush.png</iconset>
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/brush/brush.png</normaloff>:/brush/brush.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -94,8 +94,8 @@ button-&gt;setIconSize(pixmap.rect().size());</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>icons/flip.png</normaloff>icons/flip.png</iconset>
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/flip/flip.png</normaloff>:/flip/flip.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -184,8 +184,8 @@ selection-background-color: rgb(200, 200, 210);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>icons/colors.png</normaloff>icons/colors.png</iconset>
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/colors/colors.png</normaloff>:/colors/colors.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -207,8 +207,8 @@ selection-background-color: rgb(200, 200, 210);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>icons/undo.png</normaloff>icons/undo.png</iconset>
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/undo/undo.png</normaloff>:/undo/undo.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -230,8 +230,8 @@ selection-background-color: rgb(200, 200, 210);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>icons/redo.png</normaloff>icons/redo.png</iconset>
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/redo/redo.png</normaloff>:/redo/redo.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -253,8 +253,8 @@ selection-background-color: rgb(200, 200, 210);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>icons/mirror.png</normaloff>icons/mirror.png</iconset>
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/mirror/mirror.png</normaloff>:/mirror/mirror.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -289,8 +289,8 @@ selection-background-color: rgb(200, 200, 210);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>icons/erase.png</normaloff>icons/erase.png</iconset>
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/erase/erase.png</normaloff>:/erase/erase.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -364,8 +364,8 @@ selection-background-color: rgb(200, 200, 210);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>icons/cross.png</normaloff>icons/cross.png</iconset>
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/cross/cross.png</normaloff>:/cross/cross.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -387,8 +387,8 @@ selection-background-color: rgb(200, 200, 210);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>icons/invert.png</normaloff>icons/invert.png</iconset>
+     <iconset resource="icons/icons.qrc">
+      <normaloff>:/invert/invert.png</normaloff>:/invert/invert.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -574,6 +574,8 @@ selection-background-color: rgb(200, 200, 210);</string>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="icons/icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

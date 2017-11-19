@@ -19,7 +19,6 @@ public:
     ~MainWindow();
     FrameList sprite;
     void updateToolButton(int button);
-
     void save();
     void load();
     void export_to_gif();
@@ -40,8 +39,6 @@ signals:
     void flipButtonClicked();
     void previewFinished();
 
-
-
 private slots:
     void on_brushToolButton_clicked();
     void on_flipToolButton_clicked();
@@ -60,29 +57,17 @@ private slots:
     void on_actionSave_As_triggered();
     void on_actionLoad_triggered();
     void on_actionExport_triggered();
-
     void on_actionUndo_triggered();
-
     void on_actionRedo_triggered();
-
     void on_actionBrush_triggered();
-
     void on_actionMirror_triggered();
-
     void on_actionErase_triggered();
-
     void on_actionFlip_triggered();
-
     void on_actionFlip_2_triggered();
-
     void on_actionInvert_2_triggered();
-
     void on_actionClear_triggered();
-
     void on_action16_Pixel_Frame_triggered();
-
     void on_action32_Pixel_Frame_triggered();
-
     void on_action64_Pixel_Frame_triggered();
 
 public slots:
@@ -99,7 +84,6 @@ private:
     QColor color;
     QPixmap *currentFrame;
     QTimer *nextFrame;
-    bool isSaved;
     int previewFrame;
     int numFrames;
 };

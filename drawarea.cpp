@@ -5,21 +5,18 @@
 #include <QImage>
 #include <QPixmap>
 
-DrawArea::DrawArea(QWidget* parent, QImage* image, int currentFrame) : QLabel(parent)
+DrawArea::DrawArea(QWidget* parent, QImage* image) : QLabel(parent)
 {
     numberOfPixels = 32;
     pixelNumber = 2;
     pixelSize = 512 / numberOfPixels;
-    pixmap = NULL;
-    frame = image;
     this->image = new QImage(512, 512, QImage::Format_ARGB32);
     color = QColor(0,0,0);
     tool = 1;
 
-    QImage* emptyImage = new QImage(512, 512, QImage::Format_ARGB32);
-    undoList.append(emptyImage);
+    undoList.append(this->image);
 
-    updateCanvasToNewImage(frame);
+    updateCanvasToNewImage(image);
 }
 
 DrawArea::~DrawArea()
@@ -47,7 +44,6 @@ void DrawArea::mouseReleaseEvent(QMouseEvent *event) {
     detectCanvasChange(*image);
 }
 
-
 void DrawArea::drawPixel(QMouseEvent* event) {
     int posX = event->pos().x();
     int posY = event->pos().y();
@@ -74,7 +70,6 @@ void DrawArea::drawPixel(QMouseEvent* event) {
         }
     }
 
-    frame = this->image;
     this->pixmap = new QPixmap();
     this->pixmap->convertFromImage(*this->image);
     this->setPixmap(QPixmap::fromImage(*image));
@@ -103,11 +98,6 @@ void DrawArea::updateBrushSize(int size)
     pixelNumber = size;
 }
 
-/**
- * Updates the current canvas window to the new selected frame Image.
- * @brief ImageLabel::updateCanvasToNewImage
- * @param image
- */
 void DrawArea::updateCanvasToNewImage(QImage* image)
 {
     pixmap = new QPixmap();
@@ -120,10 +110,6 @@ void DrawArea::detectCanvasChange(QImage oldImage)
 {
     QImage* newImage = new QImage(oldImage);
 
-    if(undoList.size() >= 20)
-    {
-        undoList.removeFirst();
-    }
     undoList.append(newImage);
     redoList.clear();
 }
@@ -144,16 +130,7 @@ void DrawArea::undo()
         pixmap->convertFromImage(*this->image);
         this->setPixmap(QPixmap::fromImage(*image));
     }
-    else if(undoList.size() == 1)
-    {
-        redoList.append(undoList.last());
-        QImage* updatedImage = new QImage(*undoList.last());
-        image = updatedImage;
-        this->pixmap = new QPixmap();
-        pixmap->convertFromImage(*this->image);
-        this->setPixmap(QPixmap::fromImage(*image));
-        undoList.removeLast();
-    }
+
     emit updateModelWithNewFrame(image);
 }
 
@@ -175,7 +152,6 @@ void DrawArea::redo()
 void DrawArea::clearDrawArea() {
     clear();
     image->fill(Qt::transparent);
-    frame = this->image;
     redoList.clear();
     undoList.clear();
     emit updateModelWithNewFrame(image);
@@ -193,7 +169,6 @@ void DrawArea::invertColors() {
 void DrawArea::flipImage() {
     QImage mirrored = image->mirrored(true, false);
     *image = mirrored;
-    frame = this->image;
     this->pixmap = new QPixmap();
     pixmap->convertFromImage(*this->image);
     this->setPixmap(QPixmap::fromImage(*image));

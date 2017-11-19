@@ -13,18 +13,8 @@ class DrawArea : public QLabel
     Q_OBJECT
 
 public:
-    explicit DrawArea(QWidget* parent = 0, QImage* image = new QImage(), int currentFrame = 0);
+    explicit DrawArea(QWidget* parent = 0, QImage* image = new QImage());
     ~DrawArea();
-    int sizeX;
-    int sizeY;
-    int numberOfPixels;
-    int tool;
-    int pixelSize;
-    int pixelNumber;
-    QImage* image;
-    QImage* frame;
-    QColor color;
-    QPixmap* pixmap;
 
 signals:
     void updateCurrentFrameDisplay();
@@ -42,13 +32,20 @@ public slots:
     void invertColors();
     void flipImage();
 
-protected:
+private:
     void mousePressEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent *event);
     void drawPixel(QMouseEvent* event);
     void clearPixel(int x, int y);
     void detectCanvasChange(QImage);
+    int numberOfPixels;
+    int pixelNumber;
+    int tool;
+    int pixelSize;
+    QImage* image;
+    QColor color;
+    QPixmap* pixmap;
     QLinkedList<QImage *> undoList;
     QLinkedList<QImage *> redoList;
 

@@ -8,6 +8,12 @@
 #include <QMouseEvent>
 #include <QLinkedList>
 
+/**
+ * Authors: Josh Lipio, Riccardo Sonsini
+ *
+ * Draw Area header file.
+ * @brief The MainWindow class
+ */
 class DrawArea : public QLabel
 {
     Q_OBJECT
@@ -17,13 +23,13 @@ public:
     ~DrawArea();
 
 signals:
-    void updateCurrentFrameDisplay();
-    void updateModelWithNewFrame(QImage*);
+    void updateCurrentFrame();
+    void loadNewFrame(QImage*);
 
 public slots:
-    void updateFrameWidth(int size);
-    void updateToolNumber(int number);
-    void updateCanvasToNewImage(QImage* newImage);
+    void updateFrameSize(int size);
+    void updateCurrentTool(int number);
+    void changePaintFrame(QImage* newImage);
     void updateCurrentColor(QColor);
     void updateBrushSize(int);
     void undo();

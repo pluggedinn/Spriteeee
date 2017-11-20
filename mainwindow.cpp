@@ -13,6 +13,14 @@
 #include <QIcon>
 #include <QPixmap>
 
+/**
+ * Authors: Josh Lipio, Riccardo Sonsini
+ *
+ * Constructor of the View of the application.
+ * Sets up the ui, creates an empty frame and starts the preview.
+ * @brief MainWindow::MainWindow
+ * @param parent
+ */
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -43,23 +51,34 @@ MainWindow::MainWindow(QWidget *parent) :
     previewAnimation();
 }
 
+/**
+ * Deconstructor of the View. Deletes the UI object.
+ * @brief MainWindow::~MainWindow
+ */
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
+/**
+ * Adds an empty frame to the View.
+ * @brief MainWindow::addFrame
+ */
 void MainWindow::addFrame()
 {
     QImage* emptyImage = new QImage(512,512, QImage::Format_ARGB32);
-    QColor color(0,0,0,0);
-    emptyImage->fill(color);
+    emptyImage->fill(Qt::transparent);
     frames.append(emptyImage);
 }
 
+/**
+ * Creates a frame and adds it to the current frameList on the bottom of the View.
+ * @brief MainWindow::createEmptyFrame
+ */
 void MainWindow::createEmptyFrame()
 {
     numFrames++;
-    currentFrame = new QPixmap(450,450);
+    currentFrame = new QPixmap(512,512);
     addFrame();
 
     QListWidgetItem* item = new QListWidgetItem(QString::number(numFrames), 0);
@@ -74,30 +93,46 @@ void MainWindow::createEmptyFrame()
     ui->framesListWidget->update();
 }
 
-
+/**
+ * Updates current Tool button
+ * @brief MainWindow::updateToolButton
+ * @param button
+ */
 void MainWindow::updateToolButton(int button)
 {
     emit toolClicked(button);
 }
 
-
-void MainWindow::updateSelectedFrameDisplay()
+/**
+ * Updates the View with the selected current frame.
+ * @brief MainWindow::updateSelectedCurrentFrame
+ */
+void MainWindow::updateSelectedCurrentFrame()
 {
-    QPixmap pxmap;
-    pxmap.convertFromImage(*frames.at(currentFrameNum));
-    QIcon currentIcon(pxmap.copy(0,0,512,512));
+    QPixmap iconImage;
+    iconImage.convertFromImage(*frames.at(currentFrameNum));
+    QIcon currentIcon(iconImage.copy(0,0,512,512));
     selectedFrameItem->setIcon(currentIcon);
-
 }
 
-
-void MainWindow::updateSelectedFrameWithNewImage(QImage* img)
+/**
+ * Loads an image and sets it as the selected current frame.
+ * @brief MainWindow::updateLoadedNewFrame
+ * @param img
+ */
+void MainWindow::updateLoadedNewFrame(QImage* img)
 {
     frames.replace(currentFrameNum, img);
-    updateSelectedFrameDisplay();
+    updateSelectedCurrentFrame();
 }
 
-void MainWindow::export_to_gif()
+/**
+ * Exports function that puts together a list of .png files and generates from it a .gif file.
+ * It uses the deafult 'convert' installed program in the system.
+ * CONVERT HAS TO BE INSTALLED IN THE SYSTEM FOR THIS FUNCTION TO WORK.
+ * @brief MainWindow::export_to_gif
+ */
+void MainWindow::exportToGif()
 {
     int counter = 0;
     QProcess proc;
@@ -124,20 +159,24 @@ void MainWindow::export_to_gif()
     proc.start(process, parameter_list);
     if (!(proc.waitForFinished()))
     {
-        qDebug() << "Conversion failed:" << proc.errorString();
-    }
-    else
-    {
-        qDebug() << "Conversion output:" << proc.readAll();
+        qDebug() << "Creation of gif failed";
     }
 }
 
+/**
+ * It creates a copy of the frame before the current one.
+ * @brief MainWindow::copyPreviousFrame
+ */
 void MainWindow::copyPreviousFrame()
 {
     QImage *previousImage = new QImage(frames.at(currentFrameNum - 1)->copy(0,0,512,512));
-    updateSelectedFrameWithNewImage(previousImage);
+    updateLoadedNewFrame(previousImage);
 }
 
+/**
+ * It starts the loop that shows the animation of the list of frames.
+ * @brief MainWindow::previewAnimation
+ */
 void MainWindow::previewAnimation()
 {
     if (previewFrame < frames.size() - 1)
@@ -155,6 +194,11 @@ void MainWindow::previewAnimation()
     nextFrame->start(fps);
 }
 
+/**
+ * Save function.
+ * It puts together all the pixels of all the frames and creates a .ssp file that can be saved everywhere.
+ * @brief MainWindow::save
+ */
 void MainWindow::save()
 {
     int totalWidth = 512 / spriteSize;
@@ -194,7 +238,13 @@ void MainWindow::save()
     }
 }
 
-
+/**
+ * Load a previously saved .ssp project.
+ * It clears the current list of frames and the current list of pixels drawn.
+ * It then builds in the program all the frames and the pixel.
+ * It selects the first loaded frame as the current one.
+ * @brief MainWindow::load
+ */
 void MainWindow::load()
 {
     QString filename = QFileDialog::getOpenFileName(this, "Select a file to open", QDir::homePath());
@@ -261,14 +311,14 @@ void MainWindow::load()
 
                    color = QColor(red, green, blue, alpha);
                    int size = 512 / spriteSize;
-                   int leftmostX = size*column; //the leftmost pixel in the column
-                   int rightmostX = leftmostX + size; //the rightmost pixel in the column
-                   int leftmostY = size*row; //the top pixel in the row
-                   int rightmostY = leftmostY + size; //the bottom pixel in the row
+                   int leftBoundary = size * column;
+                   int rightBoundary = leftBoundary + size;
+                   int topBoundary = size * row;
+                   int bottomBoundary = topBoundary + size;
 
-                   for(int x = leftmostX; x < rightmostX; x++)
+                   for(int x = leftBoundary; x < rightBoundary; x++)
                    {
-                       for(int y = leftmostY; y < rightmostY; y++)
+                       for(int y = topBoundary; y < bottomBoundary; y++)
                        {
                            img->setPixel(x,y,color.rgba());
                        }
@@ -311,30 +361,45 @@ void MainWindow::load()
 
 
 /**
+ * Updates the brush tool.
  * @brief MainWindow::on_paintbrushToolButton_clicked
- * Selects the paint brush when clicked
  */
 void MainWindow::on_brushToolButton_clicked()
 {
     updateToolButton(1);
 }
 
+/**
+ * Update the mirror tool.
+ * @brief MainWindow::on_mirrorButton_clicked
+ */
 void MainWindow::on_mirrorButton_clicked()
 {
     updateToolButton(2);
 }
 
-
+/**
+ * Updates the erase tool.
+ * @brief MainWindow::on_eraseButton_clicked
+ */
 void MainWindow::on_eraseButton_clicked()
 {
     updateToolButton(3);
 }
 
+/**
+ * Flips the image.
+ * @brief MainWindow::on_flipToolButton_clicked
+ */
 void MainWindow::on_flipToolButton_clicked()
 {
     emit flipButtonClicked();
 }
 
+/**
+ * Changes the current selected color.
+ * @brief MainWindow::on_colorsButton_pressed
+ */
 void MainWindow::on_colorsButton_pressed()
 {
     color = QColorDialog::getColor();
@@ -342,27 +407,48 @@ void MainWindow::on_colorsButton_pressed()
     emit selectedColor(color);
 }
 
+/**
+ * Triggered when undo is pressed.
+ * @brief MainWindow::on_undoButton_clicked
+ */
 void MainWindow::on_undoButton_clicked()
 {
     emit undoButtonClicked();
 }
 
+/**
+ * Triggered when redo is pressed.
+ * @brief MainWindow::on_undoButton_clicked
+ */
 void MainWindow::on_redoButton_clicked()
 {
     emit redoButtonClicked();
 }
 
+/**
+ * Triggered when clear frame is pressed.
+ * @brief MainWindow::on_undoButton_clicked
+ */
 void MainWindow::on_clearButton_clicked()
 {
     emit clearFrameClicked();
 }
 
+/**
+ * Triggered when add is pressed.
+ * @brief MainWindow::on_undoButton_clicked
+ */
 void MainWindow::on_addFrameButton_clicked()
 {
     createEmptyFrame();
     emit frameSelected(frames.at(currentFrameNum));
 }
 
+/**
+ * Triggered when duplicate is pressed.
+ * Creates a copy of the previous frame and selectes it as the current one.
+ * @brief MainWindow::on_undoButton_clicked
+ */
 void MainWindow::on_duplicateFrameButton_clicked()
 {
     createEmptyFrame();
@@ -370,6 +456,12 @@ void MainWindow::on_duplicateFrameButton_clicked()
     emit frameSelected(frames.at(currentFrameNum));
 }
 
+/**
+ * Triggered when delete is pressed.
+ * Deletes the current frame.
+ * Sets the previous frame as the current one.
+ * @brief MainWindow::on_deleteFrameButton_clicked
+ */
 void MainWindow::on_deleteFrameButton_clicked()
 {
     if(frames.count() > 1)
@@ -401,99 +493,171 @@ void MainWindow::on_deleteFrameButton_clicked()
     }
 }
 
-
+/**
+ * Triggered when a frame is clicked.
+ * @brief MainWindow::on_framesListWidget_itemClicked
+ * @param item
+ */
 void MainWindow:: on_framesListWidget_itemClicked(QListWidgetItem *item)
 {
     int newFrameNumber = item->text().toInt();
     currentFrameNum = newFrameNumber - 1;
     selectedFrameItem = item;
-    updateSelectedFrameDisplay();
+    updateSelectedCurrentFrame();
 
     emit frameSelected(frames.at(currentFrameNum));
 }
 
-
+/**
+ * Triggered when the user moves the brush size slider.
+ * @brief MainWindow::on_brushSizeSlider_valueChanged
+ * @param value
+ */
 void MainWindow::on_brushSizeSlider_valueChanged(int value)
 {
     emit brushSliderMoved(value);
 }
 
+/**
+ * Triggered when the invert button is clicked.
+ * @brief MainWindow::on_invertButton_clicked
+ */
 void MainWindow::on_invertButton_clicked()
 {
     emit invertButtonClicked();
 }
 
+/**
+ * Triggered when the save menu button is clicked.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_actionSave_As_triggered()
 {
     save();
 }
 
+/**
+ * Triggered when the load menu button is clicked.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_actionLoad_triggered()
 {
     load();
 }
 
+/**
+ * Triggered when the export menu button is clicked.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_actionExport_triggered()
 {
-    export_to_gif();
+    exportToGif();
 }
 
+/**
+ * Triggered when the undo menu button is clicked.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_actionUndo_triggered()
 {
     emit undoButtonClicked();
 }
 
+/**
+ * Triggered when the redo menu button is clicked.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_actionRedo_triggered()
 {
     emit redoButtonClicked();
 }
 
+/**
+ * Triggered when the brush menu button is clicked.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_actionBrush_triggered()
 {
     updateToolButton(1);
 }
 
+/**
+ * Triggered when the mirror menu button is clicked.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_actionMirror_triggered()
 {
     updateToolButton(2);
 }
 
+/**
+ * Triggered when the erase menu button is clicked.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_actionErase_triggered()
 {
     updateToolButton(3);
 }
 
 
+/**
+ * Triggered when the flip menu button is clicked.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_actionFlip_2_triggered()
 {
     emit flipButtonClicked();
 }
 
+/**
+ * Triggered when the invert menu button is clicked.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_actionInvert_2_triggered()
 {
     emit invertButtonClicked();
 }
 
+/**
+ * Triggered when the clear button is clicked.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_actionClear_triggered()
 {
     emit clearFrameClicked();
 }
 
+/**
+ * Triggered when the pixel frame has changed to 16.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_action16_Pixel_Frame_triggered()
 {
     newProject(16);
 }
 
+/**
+ * Triggered when the pixel frame has changed to 32.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_action32_Pixel_Frame_triggered()
 {
     newProject(32);
 }
 
+/**
+ * Triggered when the pixel frame has changed to 64.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_action64_Pixel_Frame_triggered()
 {
     newProject(64);
 }
 
+/**
+ * Triggered when the new project.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::newProject(int size)
 {
     numFrames = 0;
@@ -506,17 +670,30 @@ void MainWindow::newProject(int size)
     emit frameSelected(frames.at(currentFrameNum));
 }
 
+/**
+ * Triggered when a new color is clicked.
+ * @brief MainWindow::on_actionSave_As_triggered
+ */
 void MainWindow::on_actionColors_triggered()
 {
     color = QColorDialog::getColor();
     emit selectedColor(color);
 }
 
+/**
+ * Triggered whenever the value of the FPS slider is changed
+ * @brief MainWindow::on_fpsSlider_valueChanged
+ * @param value
+ */
 void MainWindow::on_fpsSlider_valueChanged(int value)
 {
     fps = 1000 / value;
 }
 
+/**
+ * Triggered when about menu button is clicked
+ * @brief MainWindow::on_actionAbout_triggered
+ */
 void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox about;

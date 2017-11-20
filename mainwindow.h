@@ -9,6 +9,12 @@ namespace Ui {
 class MainWindow;
 }
 
+/**
+ * Authors: Josh Lipio, Riccardo Sonsini
+ *
+ * Mainwindows View header file.
+ * @brief The MainWindow class
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -20,7 +26,7 @@ public:
     void updateToolButton(int button);
     void save();
     void load();
-    void export_to_gif();
+    void exportToGif();
     void newProject(int);
 
 signals:
@@ -72,10 +78,10 @@ private slots:
     void on_actionAbout_triggered();
 
 public slots:
-    void updateSelectedFrameDisplay();
+    void updateSelectedCurrentFrame();
     void createEmptyFrame();
     void copyPreviousFrame();
-    void updateSelectedFrameWithNewImage(QImage* img);
+    void updateLoadedNewFrame(QImage* img);
     void previewAnimation();
 
 private:

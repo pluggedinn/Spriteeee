@@ -17,13 +17,13 @@ public:
     ~DrawArea();
 
 signals:
-    void updateCurrentFrameDisplay();
-    void updateModelWithNewFrame(QImage*);
+    void updateCurrentFrame();
+    void loadNewFrame(QImage*);
 
 public slots:
-    void updateFrameWidth(int size);
-    void updateToolNumber(int number);
-    void updateCanvasToNewImage(QImage* image);
+    void updateFrameSize(int size);
+    void updateCurrentTool(int number);
+    void changePaintFrame(QImage* image);
     void updateCurrentColor(QColor);
     void updateBrushSize(int);
     void undo();

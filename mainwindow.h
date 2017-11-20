@@ -9,6 +9,10 @@ namespace Ui {
 class MainWindow;
 }
 
+/**
+ * Mainwindows View header file.
+ * @brief The MainWindow class
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -71,10 +75,10 @@ private slots:
     void on_actionColors_triggered();
 
 public slots:
-    void updateSelectedFrameDisplay();
+    void updateSelectedCurrentFrame();
     void createEmptyFrame();
     void copyPreviousFrame();
-    void updateSelectedFrameWithNewImage(QImage* img);
+    void updateLoadedNewFrame(QImage* img);
     void restartPreview();
     void previewAnimation();
 

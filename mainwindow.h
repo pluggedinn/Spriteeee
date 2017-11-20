@@ -36,7 +36,6 @@ signals:
     void brushSliderMoved(int);
     void invertButtonClicked();
     void flipButtonClicked();
-    void previewFinished();
 
 private slots:
     void on_brushToolButton_clicked();
@@ -61,7 +60,6 @@ private slots:
     void on_actionBrush_triggered();
     void on_actionMirror_triggered();
     void on_actionErase_triggered();
-    void on_actionFlip_triggered();
     void on_actionFlip_2_triggered();
     void on_actionInvert_2_triggered();
     void on_actionClear_triggered();
@@ -69,13 +67,15 @@ private slots:
     void on_action32_Pixel_Frame_triggered();
     void on_action64_Pixel_Frame_triggered();
     void on_actionColors_triggered();
+    void on_fpsSlider_valueChanged(int value);
+
+    void on_actionAbout_triggered();
 
 public slots:
     void updateSelectedFrameDisplay();
     void createEmptyFrame();
     void copyPreviousFrame();
     void updateSelectedFrameWithNewImage(QImage* img);
-    void restartPreview();
     void previewAnimation();
 
 private:
@@ -86,6 +86,7 @@ private:
     QTimer *nextFrame;
     int currentFrameNum;
     int spriteSize;
+    int fps;
     void addFrame();
     int previewFrame;
     int numFrames;

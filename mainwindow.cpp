@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle("Spriteee Sprite Editor");
 
     QIcon icon;
     QPixmap qpm;
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     numFrames = 0;
     createEmptyFrame();
 
+    fps = 200;
     nextFrame = new QTimer();
     connect(nextFrame, SIGNAL(timeout()), this, SLOT(previewAnimation()));
 
@@ -146,17 +148,11 @@ void MainWindow::previewAnimation()
     {
         previewFrame = 0;
     }
-    QImage* previewImage = frames[previewFrame];
-    QImage preview;
-    preview = (previewImage->scaled(128,128));
-    ui->previewFrame->setAlignment(Qt::AlignCenter);
-    ui->previewFrame->setPixmap(QPixmap::fromImage(preview));
-    nextFrame->start(1000);
-}
 
-void MainWindow::restartPreview()
-{
-    previewAnimation();
+    QImage preview;
+    preview = (frames[previewFrame]->scaled(160,160));
+    ui->previewFrame->setPixmap(QPixmap::fromImage(preview));
+    nextFrame->start(fps);
 }
 
 void MainWindow::save()
@@ -467,10 +463,6 @@ void MainWindow::on_actionErase_triggered()
     updateToolButton(3);
 }
 
-void MainWindow::on_actionFlip_triggered()
-{
-    emit flipButtonClicked();
-}
 
 void MainWindow::on_actionFlip_2_triggered()
 {
@@ -518,4 +510,16 @@ void MainWindow::on_actionColors_triggered()
 {
     color = QColorDialog::getColor();
     emit selectedColor(color);
+}
+
+void MainWindow::on_fpsSlider_valueChanged(int value)
+{
+    fps = 1000 / value;
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QMessageBox about;
+    about.setText("Welcome to the Spriteee Sprite Editor! \n \nThis program lets you create a sprite animation as well as export it as a GIF!");
+    about.exec();
 }

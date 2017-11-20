@@ -23,7 +23,7 @@ signals:
 public slots:
     void updateFrameWidth(int size);
     void updateToolNumber(int number);
-    void updateCanvasToNewImage(QImage* image);
+    void updateCanvasToNewImage(QImage* newImage);
     void updateCurrentColor(QColor);
     void updateBrushSize(int);
     void undo();

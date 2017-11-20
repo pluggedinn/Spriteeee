@@ -11,7 +11,6 @@ DrawArea::DrawArea(QWidget* parent, QImage* image) : QLabel(parent)
     pixelNumber = 2;
     pixelSize = 512 / numberOfPixels;
     this->image = new QImage(512, 512, QImage::Format_ARGB32);
-    color = QColor(0,0,0);
     tool = 1;
 
     undoList.append(this->image);
@@ -81,9 +80,8 @@ void DrawArea::drawPixel(QMouseEvent* event) {
             }
         }
     }
-    this->pixmap = new QPixmap();
-    this->pixmap->convertFromImage(*this->image);
-    this->setPixmap(QPixmap::fromImage(*image));
+    pixmap->convertFromImage(*image);
+    setPixmap(QPixmap::fromImage(*image));
     emit updateCurrentFrameDisplay();
 }
 
@@ -110,12 +108,12 @@ void DrawArea::updateBrushSize(int size)
     pixelNumber = size;
 }
 
-void DrawArea::updateCanvasToNewImage(QImage* image)
+void DrawArea::updateCanvasToNewImage(QImage* newImage)
 {
     pixmap = new QPixmap();
-    this->image = image;
-    pixmap->convertFromImage(*this->image);
-    setPixmap(QPixmap::fromImage(*image));
+    image = newImage;
+    pixmap->convertFromImage(*image);
+    setPixmap(QPixmap::fromImage(*newImage));
 }
 
 void DrawArea::detectCanvasChange(QImage oldImage)
@@ -138,9 +136,8 @@ void DrawArea::undo()
         undoList.removeLast();
         QImage* updatedImage = new QImage(*undoList.last());
         image = updatedImage;
-        this->pixmap = new QPixmap();
-        pixmap->convertFromImage(*this->image);
-        this->setPixmap(QPixmap::fromImage(*image));
+        pixmap->convertFromImage(*image);
+        setPixmap(QPixmap::fromImage(*image));
     }
     emit updateModelWithNewFrame(image);
 }
@@ -150,10 +147,9 @@ void DrawArea::redo()
     if(redoList.size() > 0)
     {
         QImage* updatedImage = new QImage(*redoList.last());
-        image = updatedImage;
-        this->pixmap = new QPixmap();
-        pixmap->convertFromImage(*this->image);
-        this->setPixmap(QPixmap::fromImage(*image));
+        image = updatedImage;;
+        pixmap->convertFromImage(*image);
+        setPixmap(QPixmap::fromImage(*image));
         undoList.append(redoList.last());
         redoList.removeLast();
     }
@@ -173,9 +169,8 @@ void DrawArea::clearDrawArea()
 void DrawArea::invertColors()
 {
     image->invertPixels(QImage::InvertRgb);
-    this->pixmap = new QPixmap();
-    pixmap->convertFromImage(*this->image);
-    this->setPixmap((QPixmap::fromImage(*image)));
+    pixmap->convertFromImage(*image);
+    setPixmap((QPixmap::fromImage(*image)));
     emit updateModelWithNewFrame(image);
 }
 
@@ -183,8 +178,7 @@ void DrawArea::flipImage()
 {
     QImage mirrored = image->mirrored(true, false);
     *image = mirrored;
-    this->pixmap = new QPixmap();
-    pixmap->convertFromImage(*this->image);
-    this->setPixmap(QPixmap::fromImage(*image));
+    pixmap->convertFromImage(*image);
+    setPixmap(QPixmap::fromImage(*image));
     emit updateCurrentFrameDisplay();
 }

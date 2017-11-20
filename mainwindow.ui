@@ -56,7 +56,7 @@ background-color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>26</y>
+      <y>30</y>
       <width>51</width>
       <height>51</height>
      </rect>
@@ -108,7 +108,7 @@ button-&gt;setIconSize(pixmap.rect().size());</string>
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>556</y>
+      <y>566</y>
       <width>641</width>
       <height>121</height>
      </rect>
@@ -175,7 +175,7 @@ selection-background-color: rgb(200, 200, 210);</string>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>330</y>
+      <y>390</y>
       <width>51</width>
       <height>51</height>
      </rect>
@@ -244,7 +244,7 @@ selection-background-color: rgb(200, 200, 210);</string>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>86</y>
+      <y>90</y>
       <width>51</width>
       <height>51</height>
      </rect>
@@ -303,9 +303,9 @@ selection-background-color: rgb(200, 200, 210);</string>
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>445</y>
+      <y>510</y>
       <width>111</width>
-      <height>31</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="toolTipDuration">
@@ -348,14 +348,14 @@ selection-background-color: rgb(200, 200, 210);</string>
      <enum>QSlider::TicksBelow</enum>
     </property>
     <property name="tickInterval">
-     <number>5</number>
+     <number>3</number>
     </property>
    </widget>
    <widget class="QPushButton" name="clearButton">
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>480</y>
+      <y>330</y>
       <width>51</width>
       <height>51</height>
      </rect>
@@ -400,10 +400,10 @@ selection-background-color: rgb(200, 200, 210);</string>
    <widget class="QLabel" name="previewFrame">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>90</y>
-      <width>141</width>
-      <height>161</height>
+      <x>680</x>
+      <y>80</y>
+      <width>160</width>
+      <height>160</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -435,7 +435,7 @@ selection-background-color: rgb(200, 200, 210);</string>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>390</y>
+      <y>450</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -448,6 +448,77 @@ selection-background-color: rgb(200, 200, 210);</string>
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QSlider" name="fpsSlider">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>260</y>
+      <width>160</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;FPS&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>30</number>
+    </property>
+    <property name="value">
+     <number>5</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <property name="tickPosition">
+     <enum>QSlider::TicksBelow</enum>
+    </property>
+    <property name="tickInterval">
+     <number>0</number>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="fpsText">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>280</y>
+      <width>51</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;FPS&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="brushSizeText">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>530</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Brush Size&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>
@@ -502,7 +573,6 @@ selection-background-color: rgb(200, 200, 210);</string>
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionGuide"/>
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>
@@ -551,19 +621,9 @@ selection-background-color: rgb(200, 200, 210);</string>
     <string>Erase</string>
    </property>
   </action>
-  <action name="actionColor">
-   <property name="text">
-    <string>Color</string>
-   </property>
-  </action>
   <action name="actionColors">
    <property name="text">
     <string>Colors</string>
-   </property>
-  </action>
-  <action name="actionGuide">
-   <property name="text">
-    <string>Guide</string>
    </property>
   </action>
   <action name="actionAbout">

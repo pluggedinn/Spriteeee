@@ -10,6 +10,8 @@ class MainWindow;
 }
 
 /**
+ * Authors: Josh Lipio, Riccardo Sonsini
+ *
  * Mainwindows View header file.
  * @brief The MainWindow class
  */
@@ -24,7 +26,7 @@ public:
     void updateToolButton(int button);
     void save();
     void load();
-    void export_to_gif();
+    void exportToGif();
     void newProject(int);
 
 signals:
@@ -40,7 +42,6 @@ signals:
     void brushSliderMoved(int);
     void invertButtonClicked();
     void flipButtonClicked();
-    void previewFinished();
 
 private slots:
     void on_brushToolButton_clicked();
@@ -65,7 +66,6 @@ private slots:
     void on_actionBrush_triggered();
     void on_actionMirror_triggered();
     void on_actionErase_triggered();
-    void on_actionFlip_triggered();
     void on_actionFlip_2_triggered();
     void on_actionInvert_2_triggered();
     void on_actionClear_triggered();
@@ -73,13 +73,15 @@ private slots:
     void on_action32_Pixel_Frame_triggered();
     void on_action64_Pixel_Frame_triggered();
     void on_actionColors_triggered();
+    void on_fpsSlider_valueChanged(int value);
+
+    void on_actionAbout_triggered();
 
 public slots:
     void updateSelectedCurrentFrame();
     void createEmptyFrame();
     void copyPreviousFrame();
     void updateLoadedNewFrame(QImage* img);
-    void restartPreview();
     void previewAnimation();
 
 private:
@@ -90,6 +92,7 @@ private:
     QTimer *nextFrame;
     int currentFrameNum;
     int spriteSize;
+    int fps;
     void addFrame();
     int previewFrame;
     int numFrames;

@@ -14,6 +14,8 @@
 #include <QPixmap>
 
 /**
+ * Authors: Josh Lipio, Riccardo Sonsini
+ *
  * Constructor of the View of the application.
  * Sets up the ui, creates an empty frame and starts the preview.
  * @brief MainWindow::MainWindow
@@ -24,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle("Spriteee Sprite Editor");
 
     QIcon icon;
     QPixmap qpm;
@@ -41,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     numFrames = 0;
     createEmptyFrame();
 
+    fps = 200;
     nextFrame = new QTimer();
     connect(nextFrame, SIGNAL(timeout()), this, SLOT(previewAnimation()));
 
@@ -63,8 +67,7 @@ MainWindow::~MainWindow()
 void MainWindow::addFrame()
 {
     QImage* emptyImage = new QImage(512,512, QImage::Format_ARGB32);
-    QColor color(0,0,0,0);
-    emptyImage->fill(color);
+    emptyImage->fill(Qt::transparent);
     frames.append(emptyImage);
 }
 
@@ -75,7 +78,7 @@ void MainWindow::addFrame()
 void MainWindow::createEmptyFrame()
 {
     numFrames++;
-    currentFrame = new QPixmap(450,450);
+    currentFrame = new QPixmap(512,512);
     addFrame();
 
     QListWidgetItem* item = new QListWidgetItem(QString::number(numFrames), 0);
@@ -106,9 +109,9 @@ void MainWindow::updateToolButton(int button)
  */
 void MainWindow::updateSelectedCurrentFrame()
 {
-    QPixmap pxmap;
-    pxmap.convertFromImage(*frames.at(currentFrameNum));
-    QIcon currentIcon(pxmap.copy(0,0,512,512));
+    QPixmap iconImage;
+    iconImage.convertFromImage(*frames.at(currentFrameNum));
+    QIcon currentIcon(iconImage.copy(0,0,512,512));
     selectedFrameItem->setIcon(currentIcon);
 }
 
@@ -129,7 +132,7 @@ void MainWindow::updateLoadedNewFrame(QImage* img)
  * CONVERT HAS TO BE INSTALLED IN THE SYSTEM FOR THIS FUNCTION TO WORK.
  * @brief MainWindow::export_to_gif
  */
-void MainWindow::export_to_gif()
+void MainWindow::exportToGif()
 {
     int counter = 0;
     QProcess proc;
@@ -156,11 +159,7 @@ void MainWindow::export_to_gif()
     proc.start(process, parameter_list);
     if (!(proc.waitForFinished()))
     {
-        qDebug() << "Conversion failed:" << proc.errorString();
-    }
-    else
-    {
-        qDebug() << "Conversion output:" << proc.readAll();
+        qDebug() << "Creation of gif failed";
     }
 }
 
@@ -188,21 +187,11 @@ void MainWindow::previewAnimation()
     {
         previewFrame = 0;
     }
-    QImage* previewImage = frames[previewFrame];
-    QImage preview;
-    preview = (previewImage->scaled(128,128));
-    ui->previewFrame->setAlignment(Qt::AlignCenter);
-    ui->previewFrame->setPixmap(QPixmap::fromImage(preview));
-    nextFrame->start(1000);
-}
 
-/**
- * It restart the preview animation.
- * @brief MainWindow::restartPreview
- */
-void MainWindow::restartPreview()
-{
-    previewAnimation();
+    QImage preview;
+    preview = (frames[previewFrame]->scaled(160,160));
+    ui->previewFrame->setPixmap(QPixmap::fromImage(preview));
+    nextFrame->start(fps);
 }
 
 /**
@@ -322,14 +311,14 @@ void MainWindow::load()
 
                    color = QColor(red, green, blue, alpha);
                    int size = 512 / spriteSize;
-                   int leftmostX = size*column;
-                   int rightmostX = leftmostX + size;
-                   int leftmostY = size*row;
-                   int rightmostY = leftmostY + size;
+                   int leftBoundary = size * column;
+                   int rightBoundary = leftBoundary + size;
+                   int topBoundary = size * row;
+                   int bottomBoundary = topBoundary + size;
 
-                   for(int x = leftmostX; x < rightmostX; x++)
+                   for(int x = leftBoundary; x < rightBoundary; x++)
                    {
-                       for(int y = leftmostY; y < rightmostY; y++)
+                       for(int y = topBoundary; y < bottomBoundary; y++)
                        {
                            img->setPixel(x,y,color.rgba());
                        }
@@ -562,7 +551,7 @@ void MainWindow::on_actionLoad_triggered()
  */
 void MainWindow::on_actionExport_triggered()
 {
-    export_to_gif();
+    exportToGif();
 }
 
 /**
@@ -610,14 +599,6 @@ void MainWindow::on_actionErase_triggered()
     updateToolButton(3);
 }
 
-/**
- * Triggered when the save menu button is clicked.
- * @brief MainWindow::on_actionSave_As_triggered
- */
-void MainWindow::on_actionFlip_triggered()
-{
-    emit flipButtonClicked();
-}
 
 /**
  * Triggered when the flip menu button is clicked.
@@ -697,4 +678,25 @@ void MainWindow::on_actionColors_triggered()
 {
     color = QColorDialog::getColor();
     emit selectedColor(color);
+}
+
+/**
+ * Triggered whenever the value of the FPS slider is changed
+ * @brief MainWindow::on_fpsSlider_valueChanged
+ * @param value
+ */
+void MainWindow::on_fpsSlider_valueChanged(int value)
+{
+    fps = 1000 / value;
+}
+
+/**
+ * Triggered when about menu button is clicked
+ * @brief MainWindow::on_actionAbout_triggered
+ */
+void MainWindow::on_actionAbout_triggered()
+{
+    QMessageBox about;
+    about.setText("Welcome to the Spriteee Sprite Editor! \n \nThis program lets you create a sprite animation as well as export it as a GIF!");
+    about.exec();
 }

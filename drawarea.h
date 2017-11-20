@@ -9,8 +9,10 @@
 #include <QLinkedList>
 
 /**
- * DrawArea Model header file.
- * @brief The DrawArea class
+ * Authors: Josh Lipio, Riccardo Sonsini
+ *
+ * Draw Area header file.
+ * @brief The MainWindow class
  */
 class DrawArea : public QLabel
 {
@@ -27,7 +29,7 @@ signals:
 public slots:
     void updateFrameSize(int size);
     void updateCurrentTool(int number);
-    void changePaintFrame(QImage* image);
+    void changePaintFrame(QImage* newImage);
     void updateCurrentColor(QColor);
     void updateBrushSize(int);
     void undo();

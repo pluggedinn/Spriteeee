@@ -4,6 +4,8 @@
 #include <QFrame>
 
 /**
+ * Authors: Josh Lipio, Riccardo Sonsini
+ *
  * Main function used to connected the various parts of the program.
  * The controller of the application
  * @brief main
@@ -22,7 +24,6 @@ int main(int argc, char *argv[])
     drawArea.setGeometry(0,0,512,512);
 
     // Connect from the view with the model
-    QObject::connect(&w, SIGNAL(previewFinished()), &w, SLOT(restartPreview()));
     QObject::connect(&w, SIGNAL(setSizeFrame(int)), &drawArea, SLOT(updateFrameSize(int)));
     QObject::connect(&w, SIGNAL(toolClicked(int)), &drawArea, SLOT(updateCurrentTool(int)));
     QObject::connect(&w, SIGNAL(selectedColor(QColor)), &drawArea, SLOT(updateCurrentColor(QColor)));

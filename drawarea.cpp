@@ -6,6 +6,8 @@
 #include <QPixmap>
 
 /**
+ * Authors: Josh Lipio, Riccardo Sonsini
+ *
  * Constructor of the application Model.
  * It sets te default values to the color, number of pixels, tool and the default empty picture.
  * @brief DrawArea::DrawArea
@@ -18,7 +20,6 @@ DrawArea::DrawArea(QWidget* parent, QImage* image) : QLabel(parent)
     pixelNumber = 2;
     pixelSize = 512 / numberOfPixels;
     this->image = new QImage(512, 512, QImage::Format_ARGB32);
-    color = QColor(0,0,0);
     tool = 1;
 
     undoList.append(this->image);
@@ -44,18 +45,7 @@ DrawArea::~DrawArea()
  */
 void DrawArea::mousePressEvent(QMouseEvent* event)
 {
-    if (tool == 1)
-    {            // brush
-        drawPixel(event);
-    }
-    else if (tool == 2)
-    {      // mirror
-        drawPixel(event);
-    }
-    else if (tool == 3)
-    {      // erase
-        drawPixel(event);
-    }
+    drawPixel(event);
 }
 
 /**
@@ -92,10 +82,10 @@ void DrawArea::drawPixel(QMouseEvent* event) {
     int mouseY = event->pos().y();
     int verticalPix = mouseX / pixelSize - pixelNumber / 2;
     int horizontalPix = mouseY / pixelSize - pixelNumber / 2;
-    int leftBoundary = pixelSize*verticalPix; //the leftmost pixel in the column
-    int rightBoundary = leftBoundary + (pixelNumber * pixelSize); //the rightmost pixel in the column
-    int topBoundary = pixelSize*horizontalPix; //the top pixel in the row
-    int bottomBoundary = topBoundary + (pixelNumber * pixelSize); //the bottom pixel in the row
+    int leftBoundary = pixelSize * verticalPix;
+    int rightBoundary = leftBoundary + (pixelNumber * pixelSize);
+    int topBoundary = pixelSize * horizontalPix;
+    int bottomBoundary = topBoundary + (pixelNumber * pixelSize);
 
     for(int x = leftBoundary; x < rightBoundary; x++)
     {
@@ -107,7 +97,7 @@ void DrawArea::drawPixel(QMouseEvent* event) {
             }
             else if (tool == 2)
             {
-                int respectiveX = (pixelSize * (512 / pixelSize)) - x - 1 ; //mirror x location
+                int respectiveX = (pixelSize * (512 / pixelSize)) - x - 1 ;
                 image->setPixel(x,y,color.rgba());
                 image->setPixel(respectiveX,y,color.rgba());
             }
@@ -117,9 +107,8 @@ void DrawArea::drawPixel(QMouseEvent* event) {
             }
         }
     }
-    this->pixmap = new QPixmap();
-    this->pixmap->convertFromImage(*this->image);
-    this->setPixmap(QPixmap::fromImage(*image));
+    pixmap->convertFromImage(*image);
+    setPixmap(QPixmap::fromImage(*image));
     emit updateCurrentFrame();
 }
 
@@ -170,12 +159,12 @@ void DrawArea::updateBrushSize(int size)
  * @brief DrawArea::changePaintFrame
  * @param image
  */
-void DrawArea::changePaintFrame(QImage* image)
+void DrawArea::changePaintFrame(QImage* newImage)
 {
     pixmap = new QPixmap();
-    this->image = image;
-    pixmap->convertFromImage(*this->image);
-    setPixmap(QPixmap::fromImage(*image));
+    image = newImage;
+    pixmap->convertFromImage(*image);
+    setPixmap(QPixmap::fromImage(*newImage));
 }
 
 /**
@@ -213,9 +202,8 @@ void DrawArea::undo()
         undoList.removeLast();
         QImage* updatedImage = new QImage(*undoList.last());
         image = updatedImage;
-        this->pixmap = new QPixmap();
-        pixmap->convertFromImage(*this->image);
-        this->setPixmap(QPixmap::fromImage(*image));
+        pixmap->convertFromImage(*image);
+        setPixmap(QPixmap::fromImage(*image));
     }
     emit loadNewFrame(image);
 }
@@ -229,10 +217,9 @@ void DrawArea::redo()
     if(redoList.size() > 0)
     {
         QImage* updatedImage = new QImage(*redoList.last());
-        image = updatedImage;
-        this->pixmap = new QPixmap();
-        pixmap->convertFromImage(*this->image);
-        this->setPixmap(QPixmap::fromImage(*image));
+        image = updatedImage;;
+        pixmap->convertFromImage(*image);
+        setPixmap(QPixmap::fromImage(*image));
         undoList.append(redoList.last());
         redoList.removeLast();
     }
@@ -260,9 +247,8 @@ void DrawArea::clearDrawArea()
 void DrawArea::invertColors()
 {
     image->invertPixels(QImage::InvertRgb);
-    this->pixmap = new QPixmap();
-    pixmap->convertFromImage(*this->image);
-    this->setPixmap((QPixmap::fromImage(*image)));
+    pixmap->convertFromImage(*image);
+    setPixmap((QPixmap::fromImage(*image)));
     emit loadNewFrame(image);
 }
 
@@ -274,8 +260,7 @@ void DrawArea::flipImage()
 {
     QImage mirrored = image->mirrored(true, false);
     *image = mirrored;
-    this->pixmap = new QPixmap();
-    pixmap->convertFromImage(*this->image);
-    this->setPixmap(QPixmap::fromImage(*image));
+    pixmap->convertFromImage(*image);
+    setPixmap(QPixmap::fromImage(*image));
     emit updateCurrentFrame();
 }

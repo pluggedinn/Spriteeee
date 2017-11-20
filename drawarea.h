@@ -8,6 +8,10 @@
 #include <QMouseEvent>
 #include <QLinkedList>
 
+/**
+ * DrawArea Model header file.
+ * @brief The DrawArea class
+ */
 class DrawArea : public QLabel
 {
     Q_OBJECT
